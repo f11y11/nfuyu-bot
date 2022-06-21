@@ -97,8 +97,6 @@ class Cog(commands.Cog, name='osu!'):
         })
         if api_response[1]: # success
             res = api_response[0]
-            if api_response[0]['status'] == 'Player not found.':
-                return await ctx.send(f'Player not found in osu.{domain}')
 
             info = DNDict(res['player']['info'])
             stats = DNDict(res['player']['stats'][str(GameModes[ctx.invoked_with.upper()].value)])
@@ -106,23 +104,17 @@ class Cog(commands.Cog, name='osu!'):
             def getlevelscore(level):
                 if (level <= 100):
                     if (level > 1):
-                        return math.floor(5000/3*(4*math.pow(level, 3)-3*math.pow(level, 2)-level) + math.floor(1.25*math.pow(1.8, level-60)));
-                    
+                        return math.floor(5000/3*(4*math.pow(level, 3)-3*math.pow(level, 2)-level) + math.floor(1.25*math.pow(1.8, level-60)))
                     return 1
-                
                 return 26931190829 + 100000000000*(level-100);
             
-
             def getlevel(score):
                 i = 1;
                 while True: 
-                    lScore = getlevelscore(i);
+                    lScore = getlevelscore(i)
                     if (score < lScore):
-                        return i - 1;
-                    
+                        return i - 1
                     i+=1
-                
-            
 
             return await ctx.send(embed=Embed(
                 description = 
@@ -139,7 +131,7 @@ class Cog(commands.Cog, name='osu!'):
                 .set_thumbnail(url=f'https://a.{domain}/{info.id}')
                 )
         else:
-            return await ctx.send('A server error occured.' if not DEBUG else str(api_response[0])[:2000])
+            return await ctx.send('Player not found or a server error occured.' if not DEBUG else str(api_response[0])[:2000])
 
     @osu.error
     async def q_error(self, ctx, error):
