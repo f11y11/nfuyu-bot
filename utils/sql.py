@@ -31,5 +31,5 @@ def execute(query: str, limit: int = 2000):
             multiline_data = '\n\n'.join((str(x) for x in r))
             return multiline_data if len(multiline_data) < limit else multiline_data[:limit-3] + '...'         
             # to not exceed the 2000 character limit of discord
-            # 4096 is the limit for embed description so edit this code accordingly if you are planning to use embeds
+            # 4096 is the limit for embed description so set the limit accordingly
 
