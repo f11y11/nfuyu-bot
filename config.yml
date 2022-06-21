@@ -1,0 +1,4 @@
+command_prefix: "!"
+domain: 'nfuyu.xyz'
+debug: false
+owners_ids: [] # owners are given the permission to run SQL queries on the server's database

@@ -1,0 +1,4 @@
+requests
+discord
+pyyaml
+python-dotenv
