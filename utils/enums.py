@@ -49,6 +49,7 @@ class Mods(IntFlag):
 
     @property
     def appended(self):
+        print(self.numerator)
         x = ''
         for m in Mods:
             if self & m:
