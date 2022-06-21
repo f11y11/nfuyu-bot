@@ -1,3 +1,4 @@
+![nfuyu](https://nfuyu.xyz/)
 # NFUYU.XYZ | A discord bot for private osu! servers
 
 ## Core Features:
@@ -10,6 +11,7 @@
 ## Installation
 - `git clone https://github.com/f11y11/nfuyu-bot.git`
 - `pip install -r requirements.txt`
+- `cp .env-template .env`
 - `nano .env`
 - `nano config.yml`
 - `python main.py`
