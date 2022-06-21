@@ -1,7 +1,8 @@
 # NFUYU.XYZ | A discord bot for private osu! servers
 
 ## Core Features:
-- View the latest score of a user
+- View the latest score of a player
+- View the detailed profile of a player (All game modes supported)
 - Link usernames to discord IDs
 - Run SQL queries on your server's database from discord
 - Ability to toggle cogs on or off, you can disable sql.py if you don't want SQL connection between the bot and your database.
