@@ -134,7 +134,7 @@ class Cog(commands.Cog, name='osu!'):
             return await ctx.send('Player not found or a server error occured.' if not DEBUG else str(api_response[0])[:2000])
 
     @osu.error
-    async def q_error(self, ctx, error):
+    async def osu_error(self, ctx, error):
         return await ctx.send(error)
 
     
