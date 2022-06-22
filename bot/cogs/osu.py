@@ -78,7 +78,7 @@ class Cog(commands.Cog, name='osu!'):
     async def q_error(self, ctx, error):
         return await ctx.send(error)
 
-    @commands.command(aliases=['taiko', 'ctb', 'mania'])
+    @commands.command(aliases=['taiko', 'catch', 'mania'])
     async def osu(self, ctx, *, user: Optional[Union[Member, str]]):
         with open('users.json', 'r') as f: users: dict = json.loads(f.read())
 
@@ -141,7 +141,7 @@ class Cog(commands.Cog, name='osu!'):
     async def leaderboard(self, ctx, *, mode: str.upper = 'OSU'):
         mode = mode.replace(' ', '_')
         if mode not in GameModes.__members__.keys():
-            return await ctx.send('Invalid game mode specified. Available options: osu, taiko, ctb')
+            return await ctx.send('Invalid game mode specified.')
 
         mode: GameModes = GameModes[mode]
 

@@ -179,7 +179,7 @@ mod2modstr_dict = {
 class GameModes(Enum):
     OSU = 0
     TAIKO = 1
-    CTB = 2
+    CATCH = 2
     MANIA = 3
 
     RX_OSU = 4
