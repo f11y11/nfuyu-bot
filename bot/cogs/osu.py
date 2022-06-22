@@ -7,7 +7,7 @@ from discord.ext import commands
 from discord import Embed, Member
 from bot.bot import config
 from typing import Optional, Union
-from helpers.dictobj import DNDict
+from helpers.dndict import DNDict
 from utils.api import req
 from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
 
