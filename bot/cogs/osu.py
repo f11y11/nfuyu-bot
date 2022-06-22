@@ -62,10 +62,7 @@ class Cog(commands.Cog, name='osu!'):
 
             return await ctx.send(embed=Embed(
                 description = 
-                f'''
-                ▸ {Grades[score.grade].value[1]} ▸ **{score.pp}pp ▸ {score.acc}%**
-                ▸ {score.score} ▸ x{score.max_combo}/{map.max_combo} ▸ [{score.n300}/{score.n100}/{score.n50}/{score.nmiss}]
-                ''',
+                f'▸ {Grades[score.grade].value[1]} ▸ **{score.pp}pp ▸ {score.acc}%**\n▸ {score.score} ▸ x{score.max_combo}/{map.max_combo} ▸ [{score.n300}/{score.n100}/{score.n50}/{score.nmiss}]',
                 color = Grades[score.grade].value[0],
                 ).set_footer(text=f'{humanize.naturaltime(datetime.strptime(score.play_time,"%Y-%m-%dT%H:%M:%S")).capitalize()} on osu.{domain}')
                 .set_author(name=f'{map.title} [{map.version}] +{repr(filter_invalid_combos(Mods(score.mods), score.mode))} [{float(map.diff):.2f}★]', url=f'https://osu.{domain}/beatmapsets/{map.set_id}', icon_url=f'https://a.{domain}/{player.id}')
@@ -78,7 +75,7 @@ class Cog(commands.Cog, name='osu!'):
     async def q_error(self, ctx, error):
         return await ctx.send(error)
 
-    @commands.command(aliases=['taiko', 'catch', 'mania'])
+    @commands.command(aliases=['taiko', 'catch', 'mania', 'rx_catch', 'rx_osu', 'ap_osu', 'rx_taiko'])
     async def osu(self, ctx, *, user: Optional[Union[Member, str]]):
         with open('users.json', 'r') as f: users: dict = json.loads(f.read())
 
@@ -118,13 +115,7 @@ class Cog(commands.Cog, name='osu!'):
 
             return await ctx.send(embed=Embed(
                 description = 
-                f'''
-                ▸ **Rank:** #{stats.rank} ({info.country.upper()}#{stats.country_rank})
-                ▸ **Level:** {getlevel(stats.tscore)}
-                ▸ **PP:** {stats.pp}
-                ▸ **Playcount:** {stats.plays}
-                ▸ **Ranks:** {Grades.XH.value[1]}`{stats.xh_count}`{Grades.X.value[1]}`{stats.x_count}`{Grades.SH.value[1]}`{stats.sh_count}`{Grades.S.value[1]}`{stats.s_count}`{Grades.A.value[1]}`{stats.a_count}` 
-                ''',
+                f'▸ **Rank:** #{stats.rank} ({info.country.upper()}#{stats.country_rank})\n▸ **Level:** {getlevel(stats.tscore)}\n▸ **PP:** {stats.pp}\n▸ **Playcount:** {stats.plays}\n▸ **Ranks:** {Grades.XH.value[1]}`{stats.xh_count}`{Grades.X.value[1]}`{stats.x_count}`{Grades.SH.value[1]}`{stats.sh_count}`{Grades.S.value[1]}`{stats.s_count}`{Grades.A.value[1]}`{stats.a_count}`',
                 color = ctx.author.color,
                 )
                 .set_author(name=f'osu! {GameModes[ctx.invoked_with.upper()].name.title() if not ctx.invoked_with.upper() == "OSU" else "Standard"} Profile for {info.name}', url=f'https://osu.{domain}/u/{info.id}', icon_url=f'https://osu.{domain}/static/images/flags/{info.country.upper()}.png')
