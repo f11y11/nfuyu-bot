@@ -3,9 +3,18 @@
 ## Core Features:
 - View the latest score of a player
 - View the detailed profile of a player (All game modes supported)
+- View the server's leaderboard for any game mode including rx and ap leaderboards
 - Link usernames to discord IDs
 - Run SQL queries on your server's database from discord
 - Ability to toggle cogs on or off, you can disable sql.py if you don't want SQL connection between the bot and your database.
+
+## Commands
+### sql
+`!q <query>`
+### osu
+`!setuser <username>`
+`!osu [@member|username]`
+`!leaderboard [mode]`
 
 ## Installation
 - `git clone https://github.com/f11y11/nfuyu-bot.git`
