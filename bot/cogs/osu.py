@@ -68,7 +68,7 @@ class Cog(commands.Cog, name='osu!'):
                 ''',
                 color = Grades[score.grade].value[0],
                 ).set_footer(text=f'{humanize.naturaltime(datetime.strptime(score.play_time,"%Y-%m-%dT%H:%M:%S")).capitalize()} on osu.{domain}')
-                .set_author(name=f'{map.title} [{map.version}] +{Mods(score.mods).appended} [{float(map.diff):.2f}★]', url=f'https://osu.{domain}/beatmapsets/{map.set_id}', icon_url=f'https://a.{domain}/{player.id}')
+                .set_author(name=f'{map.title} [{map.version}] +{repr(Mods(score.mods))} [{float(map.diff):.2f}★]', url=f'https://osu.{domain}/beatmapsets/{map.set_id}', icon_url=f'https://a.{domain}/{player.id}')
                 .set_thumbnail(url=f'https://b.{domain}/thumb/{map.set_id}.jpg')
                 )
         else:
