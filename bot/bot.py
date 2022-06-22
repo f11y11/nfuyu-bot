@@ -8,6 +8,8 @@ from discord.flags import Intents
 
 intents = Intents.all()
 intents.presences = False
+# intents.messages: used to receive commands
+# intents.members: used to receive commands
 
 stream = open('config.yml', 'r')
 config = yaml.safe_load(stream)

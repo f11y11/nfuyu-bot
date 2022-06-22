@@ -181,3 +181,13 @@ class GameModes(Enum):
     TAIKO = 1
     CTB = 2
     MANIA = 3
+
+    RX_OSU = 4
+    RX_TAIKO = 5
+    RX_CATCH = 6
+    RX_MANIA = 7  # unused
+
+    AP_OSU = 8
+    AP_TAIKO = 9  # unused
+    AP_CATCH = 10  # unused
+    AP_MANIA = 11  # unused

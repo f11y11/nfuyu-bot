@@ -137,7 +137,34 @@ class Cog(commands.Cog, name='osu!'):
     async def osu_error(self, ctx, error):
         return await ctx.send(error)
 
-    
+    @commands.command()
+    async def leaderboard(self, ctx, *, mode: str.upper = 'OSU'):
+        mode = mode.replace(' ', '_')
+        if mode not in GameModes.__members__.keys():
+            return await ctx.send('Invalid game mode specified. Available options: osu, taiko, ctb')
+
+        mode: GameModes = GameModes[mode]
+
+        api_response = await req('api', 'get_leaderboard', 'GET', params={
+            'mode': mode.value,
+            'sort': 'pp',
+            'limit': 10,
+        })
+
+        if api_response[1]:
+            lb_str = '\n'.join([f'▸ **#{rank}** {player["name"]}: {player["pp"]}' for rank, player in enumerate(api_response[0]['leaderboard'], 1)])
+
+            await ctx.send(embed=Embed(
+                        description=lb_str,
+                        color=1167239
+                    ).set_author(
+                        name=f'{mode.name.replace("_", " ")} PP Leaderboard',
+                    )
+                    .set_footer(text=f'osu.{domain}')
+                  )
+        else:
+            return await ctx.send('A server error occured.' if not DEBUG else str(api_response[0])[:2000])
+
 
 def setup(bot):
     bot.add_cog(Cog(bot))
