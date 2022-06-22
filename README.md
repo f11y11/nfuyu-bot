@@ -1,4 +1,3 @@
-![nfuyu](https://nfuyu.xyz/)
 # NFUYU.XYZ | A discord bot for private osu! servers
 
 ## Core Features:
