@@ -3,6 +3,8 @@ import functools
 from enum import Enum, IntFlag, unique
 from discord import Color
 
+
+
 class Grades(Enum):
     F = (Color.from_rgb(176, 12, 26), '<:F_:988562882277040198>')
     D = (Color.from_rgb(176, 12, 26), '<:dRank:988562735560294400>')
@@ -62,6 +64,82 @@ class Mods(IntFlag):
                 mod_str.append(_dict[mod])
 
         return "".join(mod_str)
+
+KEY_MODS = (
+    Mods.KEY1
+    | Mods.KEY2
+    | Mods.KEY3
+    | Mods.KEY4
+    | Mods.KEY5
+    | Mods.KEY6
+    | Mods.KEY7
+    | Mods.KEY8
+    | Mods.KEY9
+)
+
+OSU_SPECIFIC_MODS = Mods.AUTOPILOT | Mods.SPUNOUT | Mods.TARGET
+MANIA_SPECIFIC_MODS = Mods.MIRROR | Mods.RANDOM | Mods.FADEIN | KEY_MODS
+
+def filter_invalid_combos(self, mode_vn: int) -> Mods:
+    """Remove any invalid mod combinations."""
+
+    # 1. mode-inspecific mod conflictions
+    _dtnc = self & (Mods.DOUBLETIME | Mods.NIGHTCORE)
+    if _dtnc == (Mods.DOUBLETIME | Mods.NIGHTCORE):
+        self &= ~Mods.DOUBLETIME  # DTNC
+    elif _dtnc and self & Mods.HALFTIME:
+        self &= ~Mods.HALFTIME  # (DT|NC)HT
+
+    if self & Mods.EASY and self & Mods.HARDROCK:
+        self &= ~Mods.HARDROCK  # EZHR
+
+    if self & (Mods.NOFAIL | Mods.RELAX | Mods.AUTOPILOT):
+        if self & Mods.SUDDENDEATH:
+            self &= ~Mods.SUDDENDEATH  # (NF|RX|AP)SD
+        if self & Mods.PERFECT:
+            self &= ~Mods.PERFECT  # (NF|RX|AP)PF
+
+    if self & (Mods.RELAX | Mods.AUTOPILOT):
+        if self & Mods.NOFAIL:
+            self &= ~Mods.NOFAIL  # (RX|AP)NF
+
+    if self & Mods.PERFECT and self & Mods.SUDDENDEATH:
+        self &= ~Mods.SUDDENDEATH  # PFSD
+
+    # 2. remove mode-unique mods from incorrect gamemodes
+    if mode_vn != 0:  # osu! specific
+        self &= ~OSU_SPECIFIC_MODS
+
+    # ctb & taiko have no unique mods
+
+    if mode_vn != 3:
+        self &= ~MANIA_SPECIFIC_MODS
+
+    # 3. mode-specific mod conflictions
+    if mode_vn == 0:
+        if self & Mods.AUTOPILOT:
+            if self & (Mods.SPUNOUT | Mods.RELAX):
+                self &= ~Mods.AUTOPILOT
+
+    if mode_vn == 3:
+        self &= ~Mods.RELAX
+        if self & Mods.HIDDEN and self & Mods.FADEIN:
+            self &= ~Mods.FADEIN  # HDFI
+
+    keymods_used = self & KEY_MODS
+
+    if bin(keymods_used).count("1") > 1:
+        # keep only the first
+        first_keymod = None
+        for mod in KEY_MODS:
+            if keymods_used & mod:
+                first_keymod = mod
+                break
+
+        # remove all but the first keymod.
+        self &= ~(keymods_used & ~first_keymod)
+
+    return self
 
 mod2modstr_dict = {
     Mods.NOFAIL: "NF",
