@@ -1,6 +1,7 @@
 # Connection to private server's database to execute queries through the bot.
 # Put your database credentials in .env
 
+import random
 import pymysql, os
 
 env = lambda n: os.environ.get(n)
@@ -24,7 +25,7 @@ def execute(query: str, limit: int = 2000):
             cursor.execute(query)
             r = cursor.fetchall()
             if len(r) == 0:
-                return 'OK'
+                return random.choice(['OK', 'ok!', '👍', 'ok 👍', 'OK 👍'])
             if len(r) == 1:
                 return r[0]
 
