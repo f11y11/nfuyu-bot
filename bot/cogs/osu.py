@@ -137,7 +137,7 @@ class Cog(commands.Cog, name='osu!'):
     async def osu_error(self, ctx, error):
         return await ctx.send(error)
 
-    @commands.command()
+    @commands.command(aliases=['lb'])
     async def leaderboard(self, ctx, *, mode: str.upper = 'OSU'):
         mode = mode.replace(' ', '_')
         if mode not in GameModes.__members__.keys():
