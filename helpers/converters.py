@@ -55,7 +55,7 @@ class ArgumentConverter(Converter):
         # multiple arguments, expecting 2 but more are welcome
         if arguments[0] in game_modes:
             # second argument is likely a mod
-            if arguments in ['-rx', '-ap']:
+            if arguments[1] in ['-rx', '-ap']:
                 if arguments[1] == '-rx':
                     if arguments[0] in rx_modes:
                         return rx_modes[arguments[0]]
