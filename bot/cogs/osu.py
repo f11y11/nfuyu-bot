@@ -76,18 +76,13 @@ class Cog(commands.Cog, name='osu!'):
     async def rs_error(self, ctx, error):
         return await ctx.send(error.__cause__ or error)
 
-    @commands.command(aliases=['taiko', 'catch', 'mania', 'rx_catch', 'rx_osu', 'ap_osu', 'rx_taiko'])
-    async def osu(self, ctx, *, user: Optional[Union[Member, str]]):
-        with open('users.json', 'r') as f: users: dict = json.loads(f.read())
-
-        if isinstance(user, Member):
-            # if a discord.Member is specified, get their username from users.json
-            user = users.get(str(user.id)) # get from json
-
-        if not user: # if user is not discord.Member or not specified
-            user = users.get(str(ctx.author.id)) # get from json
-            if not user: # not found in json, at this point user is unreachable by any means
-                return await ctx.send('Specify a username | Link your username to your account using !setuser')
+    @commands.command()
+    async def profile(self, ctx, *, mode: ArgumentConverter = GameModes.STANDARD):
+        with open('users.json', 'r') as f: 
+            users: dict = json.loads(f.read())
+            user = users.get(str(ctx.author.id))
+        if not user:
+            return await ctx.send('Set your username using **!setuser**.')
 
         api_response = await req('api', 'get_player_info', 'GET', params={
             'name': user,
@@ -97,7 +92,7 @@ class Cog(commands.Cog, name='osu!'):
             res = api_response[0]
 
             info = DNDict(res['player']['info'])
-            stats = DNDict(res['player']['stats'][str(GameModes[ctx.invoked_with.upper()].value)])
+            stats = DNDict(res['player']['stats'][str(mode.value)])
 
             def getlevelscore(level):
                 if (level <= 100):
@@ -119,24 +114,18 @@ class Cog(commands.Cog, name='osu!'):
                 f'▸ **Rank:** #{stats.rank} ({info.country.upper()}#{stats.country_rank})\n▸ **Level:** {getlevel(stats.tscore)}\n▸ **PP:** {stats.pp}\n▸ **Playcount:** {stats.plays}\n▸ **Ranks:** {Grades.XH.value[1]}`{stats.xh_count}`{Grades.X.value[1]}`{stats.x_count}`{Grades.SH.value[1]}`{stats.sh_count}`{Grades.S.value[1]}`{stats.s_count}`{Grades.A.value[1]}`{stats.a_count}`',
                 color = ctx.author.color,
                 )
-                .set_author(name=f'osu! {GameModes[ctx.invoked_with.upper()].name.title() if not ctx.invoked_with.upper() == "OSU" else "Standard"} Profile for {info.name}', url=f'https://osu.{domain}/u/{info.id}', icon_url=f'https://osu.{domain}/static/images/flags/{info.country.upper()}.png')
+                .set_author(name=f'{repr(mode)} Profile for {info.name}', url=f'https://osu.{domain}/u/{info.id}', icon_url=f'https://osu.{domain}/static/images/flags/{info.country.upper()}.png')
                 .set_thumbnail(url=f'https://a.{domain}/{info.id}')
                 )
         else:
             return await ctx.send('Player not found or a server error occured.' if not DEBUG else str(api_response[0])[:2000])
 
-    @osu.error
-    async def osu_error(self, ctx, error):
-        return await ctx.send(error)
+    @profile.error
+    async def profile_error(self, ctx, error):
+        return await ctx.send(error.__cause__ or error)
 
     @commands.command(aliases=['lb'])
-    async def leaderboard(self, ctx, *, mode: str.upper = 'OSU'):
-        mode = mode.replace(' ', '_')
-        if mode not in GameModes.__members__.keys():
-            return await ctx.send('Invalid game mode specified.')
-
-        mode: GameModes = GameModes[mode]
-
+    async def leaderboard(self, ctx, *, mode: ArgumentConverter = GameModes.STANDARD):
         api_response = await req('api', 'get_leaderboard', 'GET', params={
             'mode': mode.value,
             'sort': 'pp',
@@ -150,13 +139,16 @@ class Cog(commands.Cog, name='osu!'):
                         description=lb_str,
                         color=1167239
                     ).set_author(
-                        name=f'{mode.name.replace("_", " ")} PP Leaderboard',
+                        name=f'{repr(mode)} PP Leaderboard',
                     )
                     .set_footer(text=f'osu.{domain}')
                   )
         else:
             return await ctx.send('A server error occured.' if not DEBUG else str(api_response[0])[:2000])
 
+    @leaderboard.error
+    async def leaderboard_error(self, ctx, error):
+        return await ctx.send(error.__cause__ or error)
 
 def setup(bot):
     bot.add_cog(Cog(bot))
