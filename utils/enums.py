@@ -1,6 +1,7 @@
 import functools
 
 from enum import Enum, IntFlag, unique
+from typing import Tuple
 from discord import Color
 
 
@@ -177,17 +178,24 @@ mod2modstr_dict = {
 
 
 class GameModes(Enum):
-    OSU = 0
+    STANDARD = 0
     TAIKO = 1
     CATCH = 2
     MANIA = 3
 
-    RX_OSU = 4
+    RX_STANDARD = 4
     RX_TAIKO = 5
     RX_CATCH = 6
     RX_MANIA = 7  # unused
 
-    AP_OSU = 8
+    AP_STANDARD = 8
     AP_TAIKO = 9  # unused
     AP_CATCH = 10  # unused
     AP_MANIA = 11  # unused
+
+    def __repr__(self):
+        if self.value < 4:
+            return f'osu! {self.name.title()}'
+        
+        name = self.name.split('_')
+        return f'osu! {name[1].title()} {name[0]}'

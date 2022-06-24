@@ -7,6 +7,7 @@ from discord.ext import commands
 from discord import Embed, Member
 from bot.bot import config
 from typing import Optional, Union
+from helpers.converters import ArgumentConverter
 from helpers.dndict import DNDict
 from utils.api import req
 from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
@@ -35,29 +36,29 @@ class Cog(commands.Cog, name='osu!'):
         await ctx.send('Success.')
 
     @commands.command()
-    async def rs(self, ctx, *, user: Optional[Union[Member, str]]):
-        with open('users.json', 'r') as f: users: dict = json.loads(f.read())
+    async def rs(self, ctx, *, mode: ArgumentConverter = GameModes.STANDARD):
+        with open('users.json', 'r') as f: 
+            users: dict = json.loads(f.read())
+            user = users.get(str(ctx.author.id))
+        if not user:
+            return await ctx.send('Set your username using **!setuser**.')
 
-        if isinstance(user, Member):
-            # if a discord.Member is specified, get their username from users.json
-            user = users.get(str(user.id)) # get from json
-
-        if not user: # if user is not discord.Member or not specified
-            user = users.get(str(ctx.author.id)) # get from json
-            if not user: # not found in json, at this point user is unreachable by any means
-                return await ctx.send('Specify a username | Link your username to your account using !setuser')
 
         api_response = await req('api', 'get_player_scores', 'GET', params={
             'name': user,
             'scope': 'recent',
-            'mods': 0,
-            'limit': 1
+            'limit': 1,
+            'mode': mode.value
         })
 
         if api_response[1]: # success
             res = api_response[0]
-            score = DNDict(res['scores'][0])
             player = DNDict(res['player'])
+
+            if not res['scores']:
+                return await ctx.send(f'**{player.name}** has no recent score in **{repr(mode)}**')
+
+            score = DNDict(res['scores'][0])
             map = DNDict(score.beatmap)
 
             return await ctx.send(embed=Embed(
@@ -72,8 +73,8 @@ class Cog(commands.Cog, name='osu!'):
             return await ctx.send('A server error occured.' if not DEBUG else str(api_response[0])[:2000])
 
     @rs.error
-    async def q_error(self, ctx, error):
-        return await ctx.send(error)
+    async def rs_error(self, ctx, error):
+        return await ctx.send(error.__cause__ or error)
 
     @commands.command(aliases=['taiko', 'catch', 'mania', 'rx_catch', 'rx_osu', 'ap_osu', 'rx_taiko'])
     async def osu(self, ctx, *, user: Optional[Union[Member, str]]):
