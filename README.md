@@ -1,4 +1,4 @@
-# NFUYU.XYZ | A discord bot for private osu! servers
+A discord bot for private osu! servers
 
 ## Core Features:
 - View the latest score of a player
@@ -26,6 +26,4 @@
 
 ## Support (Contact Options)
 - Discord @ fuyu#2302
-- nfuyu.xyz Discord @ https://osu.nfuyu.xyz/discord
-- fuyu.gg Discord @ https://fuyu.gg/discord
 - Email @ support@fuyu.gg
