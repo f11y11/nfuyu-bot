@@ -7,6 +7,8 @@ from discord import Color
 
 
 class Grades(Enum):
+    # First element of the tuple will be used on score embeds' color.
+    # Second element is the corresponding emoji for that grade
     F = (Color.from_rgb(176, 12, 26), '<:F_:988562882277040198>')
     D = (Color.from_rgb(176, 12, 26), '<:dRank:988562735560294400>')
     C = (Color.from_rgb(150, 38, 255), '<:cRank:988562575748915200>')
