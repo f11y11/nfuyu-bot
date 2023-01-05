@@ -150,5 +150,5 @@ class Cog(commands.Cog, name='osu!'):
     async def leaderboard_error(self, ctx, error):
         return await ctx.send(error.__cause__ or error)
 
-def setup(bot):
-    bot.add_cog(Cog(bot))
+async def setup(bot):
+    await bot.add_cog(Cog(bot))

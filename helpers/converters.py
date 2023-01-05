@@ -1,5 +1,4 @@
 from typing import Union
-from click import argument
 from discord.ext.commands import Converter
 
 from utils.enums import GameModes, Mods

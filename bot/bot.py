@@ -1,9 +1,8 @@
-import os, yaml
+import os, yaml, asyncio
 
 from discord.mentions import AllowedMentions
 from discord.ext import commands
 from discord.flags import Intents
-
 
 intents = Intents.all()
 intents.presences = False
@@ -29,13 +28,15 @@ async def on_ready():
     print(f'Bot connected as {bot.user.name}')
 
 async def load_cogs():
-    await bot.wait_until_ready()
-    for filename in os.listdir('./bot/cogs'):
-        if filename.endswith('.py') and not filename.startswith('_'):
-            bot.load_extension(('bot.cogs.' + filename[:-3]))
+    await bot.load_extension("bot.cogs.osu")
+    await bot.load_extension("bot.cogs.sql")
+            
+
+asyncio.run(load_cogs())
 
 async def main(token):
     async with bot:
         await bot.start(token)
+        
 
-    await load_cogs()
+    

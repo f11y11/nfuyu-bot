@@ -20,5 +20,5 @@ class Cog(commands.Cog, name='Query Executor'):
             return await ctx.send('You are not allowed to use this command.')
         return await ctx.send(error)
 
-def setup(bot):
-    bot.add_cog(Cog(bot))
+async def setup(bot):
+    await bot.add_cog(Cog(bot))
