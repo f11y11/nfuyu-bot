@@ -1,7 +1,6 @@
 import os, yaml
-from discord.mentions import AllowedMentions
 
-from discord.colour import Colour
+from discord.mentions import AllowedMentions
 from discord.ext import commands
 from discord.flags import Intents
 
@@ -35,5 +34,8 @@ async def load_cogs():
         if filename.endswith('.py') and not filename.startswith('_'):
             bot.load_extension(('bot.cogs.' + filename[:-3]))
 
+async def main(token):
+    async with bot:
+        await bot.start(token)
 
-bot.loop.create_task(load_cogs())
+    await load_cogs()
