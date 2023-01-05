@@ -28,7 +28,7 @@ async def on_ready():
     print(f'Bot connected as {bot.user.name}')
 
 async def load_cogs():
-    await bot.load_extension("bot.cogs.osu")
+    # await bot.load_extension("bot.cogs.osu")
     await bot.load_extension("bot.cogs.sql")
             
 
