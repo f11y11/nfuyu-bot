@@ -1,4 +1,4 @@
 requests
-discord
+discord==1.7.3
 pyyaml
 python-dotenv
