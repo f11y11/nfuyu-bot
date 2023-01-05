@@ -2,3 +2,5 @@ requests
 discord
 pyyaml
 python-dotenv
+humanize
+pymysql
