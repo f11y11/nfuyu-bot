@@ -44,7 +44,7 @@ class Cog(commands.Cog, name='osu!'):
             return await ctx.send('Set your username using **!setuser**.')
 
 
-        api_response = await req('api', 'get_player_scores', 'GET', params={
+        api_response = await req('api', 'v1/get_player_scores', 'GET', params={
             'name': user,
             'scope': 'recent',
             'limit': 1,
@@ -84,7 +84,7 @@ class Cog(commands.Cog, name='osu!'):
         if not user:
             return await ctx.send('Set your username using **!setuser**.')
 
-        api_response = await req('api', 'get_player_info', 'GET', params={
+        api_response = await req('api', 'v1/get_player_info', 'GET', params={
             'name': user,
             'scope': 'all',
         })
@@ -126,7 +126,7 @@ class Cog(commands.Cog, name='osu!'):
 
     @commands.command(aliases=['lb'])
     async def leaderboard(self, ctx, *, mode: ArgumentConverter = GameModes.STANDARD):
-        api_response = await req('api', 'get_leaderboard', 'GET', params={
+        api_response = await req('api', 'v1/get_leaderboard', 'GET', params={
             'mode': mode.value,
             'sort': 'pp',
             'limit': 10,
