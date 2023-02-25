@@ -22,7 +22,7 @@ async def req(subdomain, endpoint, method='GET', params={}) -> Tuple[Union[dict,
     '''
     if method not in ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']:
         return 'Invalid HTTP method', False
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         async with session.request(method, 'https://%s.%s/%s' % (subdomain, BASE_URL, endpoint), params=dict(filter(lambda k: k[1] != None, params.items()))) as r:
             r: aiohttp.ClientResponse
             content = await r.json(content_type=None)
