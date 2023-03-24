@@ -1,7 +1,3 @@
-import asyncio
-from typing import Tuple, Union
-from enum import IntFlag
-
 import aiohttp
 
 from bot.bot import config

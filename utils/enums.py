@@ -4,23 +4,22 @@
 import functools
 
 from enum import Enum, IntFlag, unique
-from typing import Tuple
 from discord import Color
-
+from bot.bot import config
 
 
 class Grades(Enum):
     # First element of the tuple will be used on score embeds' color.
     # Second element is the corresponding emoji for that grade
-    F = (Color.from_rgb(176, 12, 26), '<:F_:988562882277040198>')
-    D = (Color.from_rgb(176, 12, 26), '<:dRank:988562735560294400>')
-    C = (Color.from_rgb(150, 38, 255), '<:cRank:988562575748915200>')
-    B = (Color.from_rgb(38, 139, 255), '<:bRank:988562475672825906>')
-    A = (Color.from_rgb(46, 204, 113), '<:aRank:988562409067253810>')
-    S = (Color.from_rgb(235, 203, 42), '<:sRank:988562305908363275>')
-    X = (Color.from_rgb(235, 203, 42), '<:ss:988562214883581992>')
-    SH = (Color.from_rgb(219, 219, 219), '<:silvers:988561962835251230>')
-    XH = (Color.from_rgb(219, 219, 219), '<:silverss:988562044104093756>')
+    F = (Color.from_rgb(176, 12, 26), config.get("EMOJI_D"))
+    D = (Color.from_rgb(176, 12, 26), config.get("EMOJI_D"))
+    C = (Color.from_rgb(150, 38, 255), config.get("EMOJI_C"))
+    B = (Color.from_rgb(38, 139, 255), config.get("EMOJI_B"))
+    A = (Color.from_rgb(46, 204, 113), config.get("EMOJI_A"))
+    S = (Color.from_rgb(235, 203, 42), config.get("EMOJI_S"))
+    X = (Color.from_rgb(235, 203, 42), config.get("EMOJI_X"))
+    SH = (Color.from_rgb(219, 219, 219), config.get("EMOJI_SH"))
+    XH = (Color.from_rgb(219, 219, 219), config.get("EMOJI_XH"))
 
 
 @unique
