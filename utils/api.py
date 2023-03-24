@@ -1,29 +1,54 @@
-# Connection to the private server's API with support of any possible subdomain
-
 import asyncio
 from typing import Tuple, Union
+from enum import IntFlag
+
 import aiohttp
+
 from bot.bot import config
+
+__all__ = (
+    'avatars',
+    'api',
+    'osu',
+    'beatmaps',
+    'server'
+)
 
 BASE_URL = config.get('domain')
 
-async def req(subdomain, endpoint, method='GET', params={}) -> Tuple[Union[dict, str], bool]:
-    '''
-    #### Make a request to your private server's API
 
-    - subdomain: subdomain ex: api, osu, a, b, c
-    - endpoint: request endpoint ex: /get_player_scores
-    - method: http method (optional, GET by default)
-    - params: dict
+class SubdomainHandler:
+    def __init__(self, subdomain):
+        self.SUBDOMAIN = subdomain
+        self.VERSION = config.get('api_version') or 1
 
-    #### Returns:
-    dict | str: JSON or response text
-    bool: False if there are errors either in the function or the request
-    '''
-    if method not in ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']:
-        return 'Invalid HTTP method', False
-    async with aiohttp.ClientSession(trust_env=True) as session:
-        async with session.request(method, 'https://%s.%s/%s' % (subdomain, BASE_URL, endpoint), params=dict(filter(lambda k: k[1] != None, params.items()))) as r:
-            r: aiohttp.ClientResponse
-            content = await r.json(content_type=None)
-            return content, str(r.status).startswith('2')
+    async def get(self, path: str, params: dict):
+        """
+        Performs a GET request on the server
+            Parameters:
+                path (string): request address
+                params (list): key: value pairs of query parameters
+            Returns:
+                {data: ..., success: boolean}
+        """
+
+        query_params = '&'.join([f'{k}={v}' for k, v in params.items()])
+
+        async with aiohttp.ClientSession(trust_env=True) as session:
+            async with session.request(
+                    'GET', f'https://{self.SUBDOMAIN}.{BASE_URL}/v{self.VERSION}/{path}?{query_params}'
+            ) as response:
+                data = await response.json(content_type=None)
+
+                if str(response.status).startswith('2'):
+                    return data
+
+                raise ValueError("Request failed")
+
+
+avatars = SubdomainHandler(subdomain='a')
+api = SubdomainHandler(subdomain='api')
+osu = SubdomainHandler(subdomain='osu')
+beatmaps = SubdomainHandler(subdomain='b')
+server = SubdomainHandler(subdomain='c')
+

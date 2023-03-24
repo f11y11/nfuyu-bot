@@ -1,7 +1,6 @@
-from typing import Union
 from discord.ext.commands import Converter
 
-from utils.enums import GameModes, Mods
+from utils.enums import GameModes
 
 __all__ = (
     'ArgumentConverter',
@@ -27,9 +26,10 @@ ap_modes = {
     'std': GameModes.AP_STANDARD
 }
 
+
 class ArgumentConverter(Converter):
     """
-    Converts an argument into game mode or mod depending on it's value 
+    Converts an argument into game mode or mod based on it's value
     """
     async def convert(self, ctx, arg) -> GameModes:
         """
@@ -43,13 +43,15 @@ class ArgumentConverter(Converter):
         if not len(arguments):
             raise ValueError('No arguments were specified')
 
-         # getting no game mode specific mode flags out of the way
-        if arg == '-rx': return GameModes.RX_STANDARD
-        if arg == '-ap': return GameModes.AP_STANDARD
-        
+        # getting no game mode specific mode flags out of the way
+        if arg == '-rx':
+            return GameModes.RX_STANDARD
+        if arg == '-ap':
+            return GameModes.AP_STANDARD
 
         if len(arguments) == 1:
-            if arg in game_modes: return game_modes[arg]
+            if arg in game_modes:
+                return game_modes[arg]
         
         # multiple arguments, expecting 2 but more are welcome
         if arguments[0] in game_modes:

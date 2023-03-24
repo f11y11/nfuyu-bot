@@ -1,4 +1,4 @@
-import os, yaml, asyncio
+import yaml
 
 from discord.mentions import AllowedMentions
 from discord.ext import commands
@@ -6,8 +6,6 @@ from discord.flags import Intents
 
 intents = Intents.all()
 intents.presences = False
-# intents.messages: used to receive commands
-# intents.members: used to receive commands
 
 stream = open('config.yml', 'r')
 config = yaml.safe_load(stream)
@@ -19,7 +17,6 @@ bot = commands.Bot(command_prefix=config.get('command_prefix', '!'),
                    case_insensitive=True,
                    intents=intents,
                    help_command=None,
-                   owner_ids=config.get('owners_ids'),
                    allowed_mentions=am)
 
 
@@ -27,16 +24,8 @@ bot = commands.Bot(command_prefix=config.get('command_prefix', '!'),
 async def on_ready():
     print(f'Bot connected as {bot.user.name}')
 
-async def load_cogs():
-    await bot.load_extension("bot.cogs.osu")
-    # await bot.load_extension("bot.cogs.sql")
-            
-
-asyncio.run(load_cogs())
 
 async def main(token):
     async with bot:
+        await bot.load_extension("bot.cogs.osu")
         await bot.start(token)
-        
-
-    

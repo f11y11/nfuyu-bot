@@ -1,28 +1,43 @@
-A discord bot for private osu! servers
+# A discord bot for private osu! servers.
+
+## Change Log:
+- ### 24/03/2023:
+  - Improve general code readability and adaptation to PEP standards.
+  - **Rewrote** `utils/api.py`:
+    - It now uses separate variables to send requests to subdomains.
+    - Supports exception handling for failing requests by raising `ValueError`.
+    - Added API version support (managed in config.yml).
+  - **Rewrote** `bot/cogs/osu.py`:
+    - More readable, customizable and maintainable code in all commands.
+    - Usernames can now be provided to commands that support it. Example: `!rs username ctb`
+    - No longer uses users.json to store user IDs.
+  - **New**: `utils/db.py`:
+    - With the addition of `sqlitedict`, usage of JSON is no longer required to store user IDs and usernames.
+    - Usernames are now stored in users.db, a file the bot will generate upon first start.
+  - **Removed** `bot/cogs/sql.py`:
+    - A barely used functionality with both vulnerability risks and constant connection failures is now fully removed.
+    - *You're advised to remove your database credentials from your environment variables upgrading to this version*.
 
 ## Core Features:
+- Link usernames to Discord user IDs
 - View the latest score of a player
-- View the detailed profile of a player (All game modes supported)
+- View the detailed profile of a player
 - View the server's leaderboard for any game mode including rx and ap leaderboards
-- Link usernames to discord IDs
-- Run SQL queries on your server's database from discord
-- Ability to toggle cogs on or off, you can disable sql.py if you don't want SQL connection between the bot and your database.
+- All game modes are supported in every command
 
 ## Commands
-### sql
-`!q <query>`
-### osu
-`!setuser <username>`
-`!osu [@member|username]`
-`!leaderboard [mode]`
+#### Arguments wrapped with square brackets are optional
+- `!setuser <username>`
+- `!leaderboard [mode]`
+- `!profile [username] [mode]`
+- `!rs [username] [mode]`
 
 ## Installation
 - `git clone https://github.com/f11y11/nfuyu-bot.git`
 - `pip install -r requirements.txt`
 - `cp .env-template .env`
-- `nano .env`
-- `nano config.yml`
-- `python main.py`
+- Configure the bot settings and server domain in config.yml and set environment variables in .env
+- Run the bot using `python main.py`
 
 ## Support (Contact Options)
 - Discord @ fuyu#2302

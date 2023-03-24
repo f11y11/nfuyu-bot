@@ -1,3 +1,6 @@
+# https://github.com/osuAkatsuki/bancho.py
+# Enums and IntFlags to determine score mods
+
 import functools
 
 from enum import Enum, IntFlag, unique
@@ -18,6 +21,7 @@ class Grades(Enum):
     X = (Color.from_rgb(235, 203, 42), '<:ss:988562214883581992>')
     SH = (Color.from_rgb(219, 219, 219), '<:silvers:988561962835251230>')
     XH = (Color.from_rgb(219, 219, 219), '<:silverss:988562044104093756>')
+
 
 @unique
 class Mods(IntFlag):
@@ -68,6 +72,7 @@ class Mods(IntFlag):
 
         return "".join(mod_str)
 
+
 KEY_MODS = (
     Mods.KEY1
     | Mods.KEY2
@@ -82,6 +87,7 @@ KEY_MODS = (
 
 OSU_SPECIFIC_MODS = Mods.AUTOPILOT | Mods.SPUNOUT | Mods.TARGET
 MANIA_SPECIFIC_MODS = Mods.MIRROR | Mods.RANDOM | Mods.FADEIN | KEY_MODS
+
 
 def filter_invalid_combos(self, mode_vn: int) -> Mods:
     """Remove any invalid mod combinations."""
@@ -144,6 +150,7 @@ def filter_invalid_combos(self, mode_vn: int) -> Mods:
 
     return self
 
+
 mod2modstr_dict = {
     Mods.NOFAIL: "NF",
     Mods.EASY: "EZ",
@@ -201,3 +208,4 @@ class GameModes(Enum):
         
         name = self.name.split('_')
         return f'osu! {name[1].title()} {name[0]}'
+
