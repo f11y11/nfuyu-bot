@@ -1,5 +1,5 @@
 # A discord bot for private osu! servers.
-## [Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
+[Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
 ## Change Log:
 - ### 24/03/2023:
   - Improve general code readability and adaptation to PEP standards.
