@@ -1,3 +1,5 @@
+# leave api_version blank to opt out from versioning (for old versions of bpy)
+
 command_prefix: "!"
 domain: 'yourdomainhere.com'
 api_version: 1
