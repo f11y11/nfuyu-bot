@@ -1,6 +1,9 @@
 # A discord bot for private osu! servers.
 [Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
 ## Change Log:
+- ### 04/14/2023:
+  - Added support for older bancho.py servers that does not have API versioning
+    - Remove the value corresponding to `api_version` in `config.yml` to opt out from versioning
 - ### 24/03/2023:
   - Improve general code readability and adaptation to PEP standards.
   - **Rewrote** `utils/api.py`:
