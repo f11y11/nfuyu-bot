@@ -15,8 +15,26 @@ BASE_URL = config.get('domain')
 
 class SubdomainHandler:
     def __init__(self, subdomain):
-        self.SUBDOMAIN = subdomain
-        self.VERSION = config.get('api_version') or 1
+        self._SUBDOMAIN = subdomain
+        self._VERSION = (config.get('api_version'))
+
+    @property
+    def version(self):
+        '''
+        Version part of the URL
+        :return: str
+        '''
+
+        return f'v{self._VERSION}' if self._VERSION else ''
+
+    @property
+    def url(self):
+        '''
+        Combines subdomain and base URL in an HTTPS url
+        :return: str
+        '''
+
+        return f'https://{self._SUBDOMAIN}.{BASE_URL}/{self.version}'
 
     async def get(self, path: str, params: dict):
         """
@@ -31,15 +49,16 @@ class SubdomainHandler:
         query_params = '&'.join([f'{k}={v}' for k, v in params.items()])
 
         async with aiohttp.ClientSession(trust_env=True) as session:
+            print(f'{self.url}/{path}?{query_params}')
             async with session.request(
-                    'GET', f'https://{self.SUBDOMAIN}.{BASE_URL}/v{self.VERSION}/{path}?{query_params}'
+                    'GET', f'{self.url}{path}?{query_params}'
             ) as response:
                 data = await response.json(content_type=None)
 
                 if str(response.status).startswith('2'):
                     return data
 
-                raise ValueError("Request failed")
+                raise ValueError('Unexpected data received from the server.')
 
 
 avatars = SubdomainHandler(subdomain='a')
