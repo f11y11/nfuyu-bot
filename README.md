@@ -39,6 +39,7 @@
 - `git clone https://github.com/f11y11/nfuyu-bot.git`
 - `pip install -r requirements.txt`
 - `cp .env-template .env`
+- `cp .config.yml-template .config.yml`
 - Configure the bot settings and server domain in config.yml and set environment variables in .env
 - Run the bot using `python main.py`
 
