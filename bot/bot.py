@@ -5,6 +5,8 @@ from discord.mentions import AllowedMentions
 from discord.ext import commands
 from discord.flags import Intents
 from discord import Game
+from string import Template
+
 
 intents = Intents.all()
 intents.presences = False
@@ -26,12 +28,8 @@ bot = commands.Bot(command_prefix=config.get('command_prefix', '!'),
 async def on_ready():
     logging.info(f'Bot connected as {bot.user.name}')
 
-    class StringInterpolatorValues(dict):
-        def __missing__(self, key):
-            return ''
-
-    if initial_status := config.get('initial_activity'):
-        output = initial_status % StringInterpolatorValues(
+    if text := config.get('initial_activity'):
+        output = Template(text).substitute(
             domain=config.get('domain')
         )
 
