@@ -1,6 +1,15 @@
 # A discord bot for private osu! servers.
 [Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
 ## Change Log:
+- ### 04/15/2023:
+  - New:
+    - Custom bot status that can be managed in `config.yml` and supports variables.
+    - Improved logging and ability to manage logging settings in `config.yml`
+  - Fixes:
+    - Fixed `profile` command not working as expected when a username is given.
+  - Misc.:
+    - Added `config.yml` to .gitignore so pulling new updates will no longer require you to run `git stash` and lose your config
+      - You'll have to run git stash once and pull for this change to reflect.
 - ### 04/14/2023:
   - Added support for older bancho.py servers that does not have API versioning
     - Remove the value corresponding to `api_version` in `config.yml` to opt out from versioning
