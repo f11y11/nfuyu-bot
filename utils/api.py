@@ -1,6 +1,7 @@
 import aiohttp
 
 from bot.bot import config
+from utils.timer import Timer
 
 __all__ = (
     'avatars',
@@ -29,23 +30,21 @@ class SubdomainHandler:
 
     @property
     def url(self):
-        '''
+        """
         Constructs the target request URL by combining subdomain, base URL and API version
         :return: str
-        '''
+        """
 
         return f'https://{self._SUBDOMAIN}.{BASE_URL}/{self.version}'
 
-    async def get(self, path: str, params: dict):
+    async def get(self, path: str, params: dict = None):
         """
         Performs a GET request on the server
-            Parameters:
-                path (string): request address
-                params (list): key: value pairs of query parameters
-            Returns:
-                {data: ..., success: boolean}
+        :param: path (string): request address
+        :param: params (list): key: value pairs of query parameters
+        :return: dict
         """
-
+        params = params or {}
         query_params = '&'.join([f'{k}={v}' for k, v in params.items()])
 
         async with aiohttp.ClientSession(trust_env=True) as session:
@@ -54,10 +53,20 @@ class SubdomainHandler:
             ) as response:
                 data = await response.json(content_type=None)
 
-                if str(response.status).startswith('2'):
-                    return data
+            if str(response.status).startswith('2'):
+                return data
 
-                raise ValueError('Unexpected data received from the server.')
+            raise ValueError('Unexpected data received from the server.')
+
+    async def latency(self):
+        async with aiohttp.ClientSession(trust_env=True) as session:
+            async with Timer() as t:
+                async with session.request(
+                        'GET', f'{self.url}'
+                ):
+                    pass
+
+            return t.result
 
 
 avatars = SubdomainHandler(subdomain='a')
