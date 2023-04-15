@@ -1,8 +1,10 @@
 import yaml
+import logging
 
 from discord.mentions import AllowedMentions
 from discord.ext import commands
 from discord.flags import Intents
+from discord import Game
 
 intents = Intents.all()
 intents.presences = False
@@ -22,7 +24,18 @@ bot = commands.Bot(command_prefix=config.get('command_prefix', '!'),
 
 @bot.event
 async def on_ready():
-    print(f'Bot connected as {bot.user.name}')
+    logging.info(f'Bot connected as {bot.user.name}')
+
+    class StringInterpolatorValues(dict):
+        def __missing__(self, key):
+            return ''
+
+    if initial_status := config.get('initial_activity'):
+        output = initial_status % StringInterpolatorValues(
+            domain=config.get('domain')
+        )
+
+        await bot.change_presence(activity=Game(name=output))
 
 
 async def main(token):
