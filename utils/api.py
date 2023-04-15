@@ -30,7 +30,7 @@ class SubdomainHandler:
     @property
     def url(self):
         '''
-        Combines subdomain and base URL in an HTTPS url
+        Constructs the target request URL by combining subdomain, base URL and API version
         :return: str
         '''
 
@@ -49,7 +49,6 @@ class SubdomainHandler:
         query_params = '&'.join([f'{k}={v}' for k, v in params.items()])
 
         async with aiohttp.ClientSession(trust_env=True) as session:
-            print(f'{self.url}/{path}?{query_params}')
             async with session.request(
                     'GET', f'{self.url}{path}?{query_params}'
             ) as response:
