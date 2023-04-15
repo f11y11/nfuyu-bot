@@ -1,6 +1,8 @@
 import logging
 import os
 import asyncio
+import subprocess
+import sys
 
 from dotenv import load_dotenv
 from bot.bot import main, config
@@ -30,9 +32,19 @@ if logging_data := config.get('logging'):
 load_dotenv()
 
 if __name__ == '__main__':
+    if config.get('auto_updates', False):
+        pull = str(subprocess.check_output(['git', 'pull']), 'UTF-8')
+        if 'up to date' not in pull:
+            logging.info('Auto-update has installed the latest version. Restarting...')
+            os.execv(sys.executable, ['python'] + sys.argv)
+
     if TOKEN := os.environ.get('TOKEN'):
         logging.info('Starting bot')
         asyncio.run(main(TOKEN))
     else:
         logging.error('No TOKEN in .env')
         logging.error('Generate an example .env file using cp .env-template .env')
+
+
+
+
