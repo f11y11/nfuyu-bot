@@ -16,14 +16,17 @@ class Timer:
         self._start = 0
         self._stop = 0
 
-    def __aenter__(self, *args, **kwargs):
+    async def __aenter__(self, *args, **kwargs):
         self._start = time()
         return self
 
-    def __aexit__(self, *args, **kwargs):
+    async def __aexit__(self, *args, **kwargs):
         self._stop = time()
         if self.name:
             logging.info(f'Timer {self.name} resulted with: {self.result:.2f}')
+
+    def __await__(self):
+        return self.__aenter__().__await__()
 
     @property
     def result(self):
