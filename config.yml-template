@@ -12,3 +12,18 @@ EMOJI_A: <:rankingAsmall2x:1088834446041559240>
 EMOJI_B: <:rankingBsmall2x:1088834447773814884>
 EMOJI_C: <:rankingCsmall2x:1088834450374271077>
 EMOJI_D: <:rankingDsmall2x:1088834451628380240>
+
+# initial_activity sets the bot's status text
+# available variables: domain
+# variables must be passed in the following format: %(variable_name)s
+initial_activity: 'on %(domain)s!'
+
+logging:
+  # possible values: error, debug, info, critical
+  # leave blank to disable logging altogether
+  level: 'info'
+  # a file name with .log extension
+  # leave it blank to disable logging to a file
+  filename:
+  # true or false determining if logs should be printed to stderr
+  console: false
