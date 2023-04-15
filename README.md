@@ -5,6 +5,10 @@
   - New:
     - Custom bot status that can be managed in `config.yml` and supports variables.
     - Improved logging and ability to manage logging settings in `config.yml`
+    - Stats command that shows total registered users and online players count.
+    - Auto-updates from GitHub, managed in `config.yml` (disabled by default)
+      - Set `auto_updates` to `true` in `config.yml` to enable auto-updates
+      - Note that it isn't fully tested and issues might occur.
   - Fixes:
     - Fixed `profile` command not working as expected when a username is given.
   - Misc.:
@@ -43,6 +47,7 @@
 - `!leaderboard [mode]`
 - `!profile [username] [mode]`
 - `!rs [username] [mode]`
+- `!stats`
 
 ## Installation
 - `git clone https://github.com/f11y11/nfuyu-bot.git`
