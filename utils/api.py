@@ -20,10 +20,10 @@ class SubdomainHandler:
 
     @property
     def version(self):
-        '''
+        """
         Version part of the URL
         :return: str
-        '''
+        """
 
         return f'v{self._VERSION}' if self._VERSION else ''
 
