@@ -15,8 +15,8 @@ EMOJI_D: <:rankingDsmall2x:1088834451628380240>
 
 # initial_activity sets the bot's status text
 # available variables: domain
-# variables must be passed in the following format: %(variable_name)s
-initial_activity: 'on %(domain)s!'
+# variables must be passed in the following format: $variable_name
+initial_activity: 'on $domain'
 
 logging:
   # possible values: error, debug, info, critical
