@@ -27,3 +27,5 @@ logging:
   filename:
   # true or false determining if logs should be printed to stderr
   console: false
+
+auto_updates: false
