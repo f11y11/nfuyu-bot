@@ -234,6 +234,33 @@ class Cog(commands.Cog, name='osu!'):
     async def leaderboard_error(self, ctx, error):
         return await ctx.send(error.__cause__ or error)
 
+    @commands.command()
+    async def stats(self, ctx):
+
+        try:
+            response = await api.get('get_player_count')
+        except ValueError:
+            return await ctx.send(embed=Embed(
+                description='Server unreachable.',
+                color=0x00ff00
+            ))
+        else:
+
+            counts = response['counts']
+
+            description = f"""
+            ▸ **Registered Users:** {counts['total']}\n▸ **Currently Playing:** {counts['online']}\n
+            """
+
+            embed = Embed(
+                description=description,
+                color=0x00ff00
+            )\
+                .set_thumbnail(url='https://'+domain+'/favicon.ico')\
+                .set_footer(text=f'api.{domain}')
+
+            await ctx.send(embed=embed)
+
 
 async def setup(bot):
     await bot.add_cog(Cog(bot))
