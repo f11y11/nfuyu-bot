@@ -1,5 +1,6 @@
 import math
 import humanize
+import logging
 
 from datetime import datetime
 from discord.ext import commands
@@ -14,13 +15,36 @@ DEBUG: bool = config.get('debug')
 domain = config.get('domain')
 
 
+async def get_username_and_mode(ctx, username: str = None, mode: GameModes = GameModes.STANDARD):
+    """
+    Returns a tuple containing the username and GameMode
+    :return: tuple[str, GameModes]
+    :raises: ValueError
+    """
+    if username:
+        try:
+            _mode = await ArgumentConverter().convert(ctx, username)
+        except ValueError:
+            pass
+        else:
+            mode = _mode
+            username = None
+
+    user = username or users.get(str(ctx.author.id))
+
+    if not user and not username:
+        raise ValueError("Set your username using **!setuser**.")
+    else:
+        return user, mode
+
+
 class Cog(commands.Cog, name='osu!'):
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog: {self.qualified_name} loaded')
+        logging.info(f'Cog: {self.qualified_name} loaded')
 
     def cog_unload(self):
-        print(f'Cog: {self.qualified_name} unloaded')
+        logging.info(f'Cog: {self.qualified_name} unloaded')
 
     @commands.command()
     async def setuser(self, ctx, *, username):
@@ -31,19 +55,7 @@ class Cog(commands.Cog, name='osu!'):
     async def rs(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
         mode: GameModes
 
-        # checks if username was intended to be a mode
-        if username:
-            try:
-                _mode = await ArgumentConverter.convert(None, ctx, username)
-            except ValueError:
-                pass
-            else:
-                mode = _mode
-                username = None
-
-        user = users.get(str(ctx.author.id))
-        if not user and not username:
-            return await ctx.send("Set your username using **!setuser**.")
+        user, mode = await get_username_and_mode(ctx, username, mode)
 
         try:
             data = await api.get('get_player_scores', {
@@ -113,14 +125,15 @@ class Cog(commands.Cog, name='osu!'):
     async def profile(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
         mode: GameModes
 
-        user = users.get(str(ctx.author.id))
-        if not user and not username:
-            return await ctx.send("Set your username using **!setuser**.")
+        user, mode = await get_username_and_mode(ctx, username, mode)
 
-        data = await api.get('get_player_info', params={
-            'name': user,
-            'scope': 'all',
-        })
+        try:
+            data = await api.get('get_player_info', params={
+                'name': user,
+                'scope': 'all',
+            })
+        except ValueError:
+            return await ctx.send('Player not found')
 
         info = data["player"]["info"]
         stats = data["player"]["stats"][str(mode.value)]
