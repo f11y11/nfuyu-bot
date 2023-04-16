@@ -47,7 +47,8 @@ class SubdomainHandler:
         :return: dict
         """
         params = params or {}
-        query_params = '&'.join([f'{k}={v}' for k, v in params.items()])
+        # todo: refactor v.replace() part maybe
+        query_params = '&'.join([f'{k}={v.replace(" ", "_") if isinstance(v, str) else v}' for k, v in params.items()])
 
         async with aiohttp.ClientSession(trust_env=True) as session:
             async with session.request(
