@@ -1,3 +1,5 @@
+import logging
+
 import aiohttp
 
 from bot.bot import config
@@ -56,7 +58,11 @@ class SubdomainHandler:
             if str(response.status).startswith('2'):
                 return data
 
-            raise ValueError('Unexpected data received from the server.')
+            if status := data.get('status'):
+                raise ValueError(status)
+            else:
+                logging.error(f'Generic error exception for the following response: {data}')
+                raise ValueError('Something went wrong!')
 
     async def latency(self):
         async with aiohttp.ClientSession(trust_env=True) as session:
