@@ -124,13 +124,10 @@ class Cog(commands.Cog, name='osu!'):
 
         user, mode = await get_username_and_mode(ctx, username, mode)
 
-        try:
-            data = await api.get('get_player_info', params={
-                'name': user,
-                'scope': 'all',
-            })
-        except ValueError:
-            return await ctx.send('Player not found')
+        data = await api.get('get_player_info', params={
+            'name': user,
+            'scope': 'all',
+        })
 
         info = data["player"]["info"]
         stats = data["player"]["stats"][str(mode.value)]
