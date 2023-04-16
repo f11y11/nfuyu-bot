@@ -58,7 +58,7 @@ class Cog(commands.Cog, name='osu!'):
         user, mode = await get_username_and_mode(ctx, username, mode)
 
         data = await api.get('get_player_scores', {
-            "name": username or user,
+            "name": user,
             "scope": "recent",
             "limit": 1,
             "mode": mode.value
