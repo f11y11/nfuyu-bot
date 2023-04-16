@@ -61,7 +61,7 @@ class SubdomainHandler:
             if status := data.get('status'):
                 raise ValueError(status)
             else:
-                logging.error(f'Generic error exception for the following response: {data}')
+                logging.error(f'Generic error exception was raised for the following response: {data}')
                 raise ValueError('Something went wrong!')
 
     async def latency(self):
