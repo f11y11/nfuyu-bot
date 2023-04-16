@@ -48,7 +48,7 @@ class Cog(commands.Cog, name='osu!'):
 
     @commands.command()
     async def setuser(self, ctx, *, username):
-        users.setdefault(str(ctx.author.id), username)
+        users[str(ctx.author.id)] = username
         await ctx.send("Username set.")
 
     @commands.command()
@@ -57,15 +57,12 @@ class Cog(commands.Cog, name='osu!'):
 
         user, mode = await get_username_and_mode(ctx, username, mode)
 
-        try:
-            data = await api.get('get_player_scores', {
-                "name": username or user,
-                "scope": "recent",
-                "limit": 1,
-                "mode": mode.value
-            })
-        except ValueError:
-            return await ctx.send("Player not found.")
+        data = await api.get('get_player_scores', {
+            "name": username or user,
+            "scope": "recent",
+            "limit": 1,
+            "mode": mode.value
+        })
 
         player = data["player"]
         scores = data["scores"]
