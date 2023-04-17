@@ -7,7 +7,7 @@ import sys
 from dotenv import load_dotenv
 from bot.bot import main, config
 
-# Set up logging from config
+
 if logging_data := config.get('logging'):
     if logging_level := logging_data.get('level'):
         if logging_level and logging_level not in (
@@ -28,6 +28,11 @@ if logging_data := config.get('logging'):
             if logging_console:
                 logging.getLogger().addHandler(logging.StreamHandler())
 
+            if not logging_console and not logging_filename:
+                print('''
+                You have enabled logging but set left both console and filename blank.
+                Nothing will be printed to the console or written to a file. 
+                ''')
 
 load_dotenv()
 
