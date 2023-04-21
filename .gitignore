@@ -68,7 +68,7 @@ db.sqlite3-journal
 config.yml
 
 # templates file
-templates.yml
+templates.ymlg
 
 # Flask stuff:
 instance/
