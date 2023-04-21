@@ -67,6 +67,9 @@ db.sqlite3-journal
 # config file
 config.yml
 
+# templates file
+templates.yml
+
 # Flask stuff:
 instance/
 .webassets-cache
