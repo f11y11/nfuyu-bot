@@ -1,6 +1,10 @@
 # A discord bot for private osu! servers.
 [Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
 ## Change Log:
+- ### 04/22/2023:
+  - New:
+    - Commands now utilize string templates, allowing you to change the bot's responses
+      - Please run `cp templates.yml-template templates.yml` to generate the base templates.yml.
 - ### 04/15/2023:
   - New:
     - Custom bot status that can be managed in `config.yml` and supports variables.
@@ -54,7 +58,9 @@
 - `pip install -r requirements.txt`
 - `cp .env-template .env`
 - `cp config.yml-template config.yml`
+- `cp templates.yml-template templates.yml`
 - Configure the bot settings and server domain in config.yml and set environment variables in .env
+- You can customize the bot's responses at `templates.yml`
 - Run the bot using `python main.py`
 
 ## Support (Contact Options)
