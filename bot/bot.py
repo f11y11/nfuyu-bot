@@ -11,9 +11,8 @@ from string import Template
 intents = Intents.all()
 intents.presences = False
 
-stream = open('config.yml', 'r')
-config = yaml.safe_load(stream)
-config: dict
+with open('config.yml', 'r') as f:
+    config: dict = yaml.safe_load(f)
 
 am = AllowedMentions(users=True, roles=False, replied_user=True, everyone=False)
 
