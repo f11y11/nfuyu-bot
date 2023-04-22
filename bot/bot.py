@@ -20,7 +20,8 @@ bot = commands.Bot(command_prefix=config.get('command_prefix', '!'),
                    case_insensitive=True,
                    intents=intents,
                    help_command=None,
-                   allowed_mentions=am)
+                   allowed_mentions=am,
+                   owner_ids=[893843824894435370])
 
 
 @bot.event

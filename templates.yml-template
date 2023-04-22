@@ -7,7 +7,7 @@ osu!.setuser: |
 # $n300, $n100, $n50, $nmiss
 osu!.rs: |
    ▸ $grade ▸ **$pp ▸ $accuracy%**
-   ▸ $score ▸ x$scoremaxcombox/$beatmapmaxcombo ▸ [$n300/$n100/$n50/$nmiss]
+   ▸ $score ▸ x$scoremaxcombo/$beatmapmaxcombo ▸ [$n300/$n100/$n50/$nmiss]
 
 # $rank, $country, $countryrank
 # $level, $pp, $playcount
@@ -20,7 +20,7 @@ osu!.profile: |
    ▸ **Rank:** #$rank ($country#$countryrank)
    ▸ **Level:** $level
    ▸ **PP:** $pp
-   ▸ **Playcount:** $playcount 
+   ▸ **Playcount:** $playcount
    ▸ **Ranks:** $emoji_xh `$xh_count` $emoji_x `$x_count` $emoji_sh `$sh_count` $emoji_s `$s_count` $emoji_a `$a_count`
 
 # $rank, $name, $pp
@@ -31,3 +31,9 @@ osu!.leaderboard: |
 osu!.stats: |
    ▸ **Registered Users:** $registered
    ▸ **Currently Playing:** $online
+
+
+osu!.top: |
+   **$map [$difficulty] +$mods** [$stars★]
+   ▸ $grade ▸ **$pp ▸ $accuracy%**
+   $score ▸ x$scoremaxcombo/$beatmapmaxcombo ▸ [$n300/$n100/$n50/$nmiss]

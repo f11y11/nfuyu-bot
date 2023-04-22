@@ -215,7 +215,7 @@ class Cog(commands.Cog, name='osu!'):
                     description=description,
                     color=1167239
                 ).set_author(
-                    name=f'{repr(mode)} PP Leaderboard', icon_url='https://'+domain+'/favicon.ico'
+                    name=f'{repr(mode)} PP Leaderboard', icon_url='https://'+domain+'/static/favicon/favicon.ico'
                 )
                 .set_footer(text=f'osu.{domain}')
               )
@@ -251,6 +251,58 @@ class Cog(commands.Cog, name='osu!'):
                 .set_footer(text=f'api.{domain}')
 
             await ctx.send(embed=embed)
+
+    @commands.is_owner()
+    @commands.command()
+    async def top(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
+        mode: GameModes
+
+        user, mode = await get_username_and_mode(ctx, username, mode)
+
+        data = await api.get('get_player_scores', params={
+            'name': user,
+            'scope': 'best',
+            'limit': 5,
+            'mode': mode.value
+        })
+
+        user_data = await api.get('get_player_info', params={
+            'name': user,
+            'scope': 'all',
+        })
+
+        user_info = user_data["player"]["info"]
+
+        description = '\n\n'.join([
+            get_template(self.qualified_name, 'top').substitute(
+                rank=rank,
+                map=score['beatmap']['title'],
+                difficulty=score['beatmap']['version'],
+                mods=score['mods_readable'],
+                link=f"https://{domain}/beatmapsets/{score['beatmap']['set_id']}",
+                stars=score['beatmap']['diff'],
+                grade=score['grade'],
+                pp=score['pp'],
+                accuracy=score['acc'],
+                score=score['score'],
+                scoremaxcombo=score['max_combo'],
+                beatmapmaxcombo=score['beatmap']['max_combo'],
+                n300=score['n300'],
+                n100=score['n100'],
+                n50=score['n50'],
+                nmiss=score['nmiss'],
+            )
+            for rank, score in enumerate(data["scores"], 1)]
+        )
+
+        embed = Embed(
+            description=description,
+        )
+
+        embed.set_footer(text=f'On {domain}', icon_url=f'https://{domain}/static/favicon/favicon.ico')
+        embed.set_author(name=f'Top Plays for {user}', icon_url=f'https://osu.{domain}/static/images/flags/{user_info["country"].upper()}.png')
+
+        await ctx.send(embed=embed)
 
 
 async def setup(bot):
