@@ -2,9 +2,14 @@
 [Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
 ## Change Log:
 - ### 04/22/2023:
-  - New:
+  - New (Breaking Changes):
     - Commands now utilize string templates, allowing you to change the bot's responses
       - Please run `cp templates.yml-template templates.yml` to generate the base templates.yml.
+  - Fixes:
+    - Improved `helpers/converters.py'
+      - All flags now work properply.
+      - Taiko no longer returns `GameModes.STANDARD`
+      - Contributor: @Hizeer-exe ❤️
 - ### 04/15/2023:
   - New:
     - Custom bot status that can be managed in `config.yml` and supports variables.
