@@ -1,6 +1,7 @@
 # A discord bot for private osu! servers.
 [Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
 ## Change Log:
+- ### 04/22/2023:
   - Fixes:
     - Improved `helpers/converters.py'
       - All flags now work properply.
