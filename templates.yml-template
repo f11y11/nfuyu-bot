@@ -7,7 +7,7 @@ osu!.setuser: |
 # $n300, $n100, $n50, $nmiss
 osu!.rs: |
    ▸ $grade ▸ **$pp ▸ $accuracy%**
-   ▸ $score ▸ x$beatmapmaxcombo/$scoremaxcombo ▸ [$n300/$n100/$n50/$nmiss]
+   ▸ $score ▸ x$scoremaxcombox/$beatmapmaxcombo ▸ [$n300/$n100/$n50/$nmiss]
 
 # $rank, $country, $countryrank
 # $level, $pp, $playcount
