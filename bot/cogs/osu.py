@@ -3,6 +3,8 @@ import humanize
 import logging
 
 from datetime import datetime
+
+import yaml
 from discord.ext import commands
 from discord import Embed
 from bot.bot import config
@@ -10,9 +12,19 @@ from helpers.converters import ArgumentConverter
 from utils.api import *
 from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
 from utils.db import users
+from string import Template
 
 DEBUG: bool = config.get('debug')
 domain = config.get('domain')
+with open('templates.yml', 'r', encoding='utf-8') as f:
+    templates: dict = yaml.safe_load(f)
+
+
+def get_template(cog_name, command_name: str) -> Template:
+    if val := templates.get(f'{cog_name}.{command_name}'):
+        return Template(val)
+
+    raise KeyError(f'No command description found for {cog_name}.{command_name}.')
 
 
 async def get_username_and_mode(ctx, username: str = None, mode: GameModes = GameModes.STANDARD):
@@ -49,7 +61,9 @@ class Cog(commands.Cog, name='osu!'):
     @commands.command()
     async def setuser(self, ctx, *, username):
         users[str(ctx.author.id)] = username
-        await ctx.send("Username set.")
+        await ctx.send(get_template(self.qualified_name, 'setuser').substitute(
+            username=username
+        ))
 
     @commands.command()
     async def rs(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
@@ -74,20 +88,17 @@ class Cog(commands.Cog, name='osu!'):
             beatmap = score["beatmap"]
             has_mods = bool(filter_invalid_combos(Mods(score["mods"]), score["mode"]).value)
 
-            description = """
-            ▸ {} ▸ **{}pp ▸ {}%**
-            ▸ {} ▸ x{}/{} ▸ [{}/{}/{}/{}]
-            """.format(
-                Grades[score["grade"]].value[1],
-                score["pp"],
-                score["acc"],
-                score["score"],
-                score["max_combo"],
-                beatmap["max_combo"],
-                score["n300"],
-                score["n100"],
-                score["n50"],
-                score["nmiss"]
+            description = get_template(self.qualified_name, 'rs').substitute(
+                grade=Grades[score["grade"]].value[1],
+                pp=score["pp"],
+                accuracy=score["acc"],
+                score=score["score"],
+                scoremaxcombo=score["max_combo"],
+                beatmapmaxcombo=beatmap["max_combo"],
+                n300=score["n300"],
+                n100=score["n100"],
+                n50=score["n50"],
+                nmiss=score["nmiss"]
             )
 
             footer = """
@@ -148,44 +159,23 @@ class Cog(commands.Cog, name='osu!'):
                     return i - 1
                 i += 1
 
-        # replace description with this to replace grade emojis with text
-        description = """
-        ▸ **Rank:** #%s (%s#%s)\n▸ **Level:** %s
-        ▸ **PP:** %s\n▸ **Playcount:** %s\n▸ **Ranks:** %s `%s` %s `%s` %s `%s` %s `%s` %s `%s`
-        """ % (
-            stats["rank"],
-            info["country"].upper(),
-            stats["country_rank"],
-            get_level(stats["tscore"]),
-            stats["pp"],
-            stats["plays"],
-            Grades["XH"].value[1],
-            stats["xh_count"],
-            Grades["X"].value[1],
-            stats["x_count"],
-            Grades["SH"].value[1],
-            stats["sh_count"],
-            Grades["S"].value[1],
-            stats["s_count"],
-            Grades["A"].value[1],
-            stats["a_count"]
-        )
-
-        """
-        ▸ **Rank:** #%s (%s#%s)\n▸ **Level:** %s
-        ▸ **PP:** %s\n▸ **Playcount:** %s\n▸ **Ranks:** **XH** `%s` **X** `%s` **SH** `%s` **S** `%s` **A** `%s`
-        """ % (
-            stats["rank"],
-            info["country"].upper(),
-            stats["country_rank"],
-            get_level(stats["tscore"]),
-            stats["pp"],
-            stats["plays"],
-            stats["xh_count"],
-            stats["x_count"],
-            stats["sh_count"],
-            stats["s_count"],
-            stats["a_count"]
+        description = get_template(self.__cog_name__, 'profile').substitute(
+            rank=stats["rank"],
+            country=info["country"].upper(),
+            countryrank=stats["country_rank"],
+            level=get_level(stats["tscore"]),
+            pp=stats["pp"],
+            playcount=stats["plays"],
+            emoji_xh=Grades["XH"].value[1],
+            xh_count=stats["xh_count"],
+            emoji_x=Grades["X"].value[1],
+            x_count=stats["x_count"],
+            emoji_sh=Grades["SH"].value[1],
+            sh_count=stats["sh_count"],
+            emoji_s=Grades["S"].value[1],
+            s_count=stats["s_count"],
+            emoji_a=Grades["A"].value[1],
+            a_count=stats["a_count"]
         )
 
         return await ctx.send(embed=Embed(
@@ -212,8 +202,14 @@ class Cog(commands.Cog, name='osu!'):
             'limit': 10,
         })
 
-        description = '\n'.join([f'▸ **#{rank}** {player["name"]}: {player["pp"]}' for
-                                 rank, player in enumerate(data["leaderboard"], 1)])
+        description = '\n'.join([
+            get_template(self.qualified_name, 'leaderboard').substitute(
+                rank=rank,
+                name=player["name"],
+                pp=player["pp"]
+            )
+            for rank, player in enumerate(data["leaderboard"], 1)]
+        )
 
         await ctx.send(embed=Embed(
                     description=description,
@@ -242,9 +238,10 @@ class Cog(commands.Cog, name='osu!'):
 
             counts = response['counts']
 
-            description = f"""
-            ▸ **Registered Users:** {counts['total']}\n▸ **Currently Playing:** {counts['online']}\n
-            """
+            description = get_template(self.qualified_name, 'stats').substitute(
+                registered=counts['total'],
+                online=counts['online'],
+            )
 
             embed = Embed(
                 description=description,

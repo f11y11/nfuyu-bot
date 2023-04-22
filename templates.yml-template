@@ -1,0 +1,33 @@
+# $username
+osu!.setuser: |
+   Username set.
+
+# $grade, $pp, $accuracy, $score
+# $scoremaxcombo, $beatmapmaxcombo
+# $n300, $n100, $n50, $nmiss
+osu!.rs: |
+   ▸ $grade ▸ **$pp ▸ $accuracy%**
+   ▸ $score ▸ x$beatmapmaxcombo/$scoremaxcombo ▸ [$n300/$n100/$n50/$nmiss]
+
+# $rank, $country, $countryrank
+# $level, $pp, $playcount
+# $emoji_xh, $xh_count
+# $emoji_x, $x_count
+# $emoji_sh, $sh_count
+# $emoji_s, $s_count
+# $emoji_a, $a_count
+osu!.profile: |
+   ▸ **Rank:** #$rank ($country#$countryrank)
+   ▸ **Level:** $level
+   ▸ **PP:** $pp
+   ▸ **Playcount:** $playcount 
+   ▸ **Ranks:** $emoji_xh `$xh_count` $emoji_x `$x_count` $emoji_sh `$sh_count` $emoji_s `$s_count` $emoji_a `$a_count`
+
+# $rank, $name, $pp
+osu!.leaderboard: |
+   ▸ **#$rank** $name: $pp
+
+# $registered, $online
+osu!.stats: |
+   ▸ **Registered Users:** $registered
+   ▸ **Currently Playing:** $online
