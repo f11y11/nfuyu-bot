@@ -1,6 +1,11 @@
 # A discord bot for private osu! servers.
 [Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
 ## Change Log:
+  - Fixes:
+    - Improved `helpers/converters.py'
+      - All flags now work properply.
+      - Taiko no longer returns `GameModes.STANDARD`
+      - Contributor: @Hizeer-exe ❤️
 - ### 04/15/2023:
   - New:
     - Custom bot status that can be managed in `config.yml` and supports variables.
