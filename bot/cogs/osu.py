@@ -1,6 +1,7 @@
 import math
 import humanize
 import logging
+import random
 
 from datetime import datetime
 
@@ -122,7 +123,7 @@ class Cog(commands.Cog, name='osu!'):
                 color=Grades[score["grade"]].value[0]).set_footer(
                 text=footer).set_author(name=author,
                                         url=f'https://osu.{domain}/beatmapsets/{beatmap["set_id"]}',
-                                        icon_url=f'https://a.{domain}/{player["id"]}').set_thumbnail(
+                                        icon_url=f'https://a.{domain}/{player["id"]}?{random.choice(range(10000,100000000))}').set_thumbnail(
                 url=f'https://b.{domain}/thumb/{beatmap["set_id"]}.jpg'))
 
     @rs.error
@@ -186,7 +187,7 @@ class Cog(commands.Cog, name='osu!'):
                 name=f'{repr(mode)} Profile for {info["name"]}',
                 url=f'https://osu.{domain}/u/{info["id"]}',
                 icon_url=f'https://osu.{domain}/static/images/flags/{info["country"].upper()}.png')
-            .set_thumbnail(url=f'https://a.{domain}/{info["id"]}'))
+            .set_thumbnail(url=f'https://a.{domain}/{info["id"]}?{random.choice(range(10000,100000000))}'))
 
     @profile.error
     async def profile_error(self, ctx, error):
@@ -252,7 +253,6 @@ class Cog(commands.Cog, name='osu!'):
 
             await ctx.send(embed=embed)
 
-    @commands.is_owner()
     @commands.command()
     async def top(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
         mode: GameModes
@@ -301,9 +301,13 @@ class Cog(commands.Cog, name='osu!'):
 
         embed.set_footer(text=f'On {domain}', icon_url=f'https://{domain}/static/favicon/favicon.ico')
         embed.set_author(name=f'Top Plays for {user}', icon_url=f'https://osu.{domain}/static/images/flags/{user_info["country"].upper()}.png')
+        embed.set_thumbnail(url=f'https://a.{domain}/{user_info["id"]}?{random.choice(range(10000,100000000))}'))
 
         await ctx.send(embed=embed)
-
+        
+    @top.error
+    async def top_error(self, ctx, error):
+        await ctx.send(error.__cause__ or error)
 
 async def setup(bot):
     await bot.add_cog(Cog(bot))
