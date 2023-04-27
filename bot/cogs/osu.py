@@ -156,11 +156,32 @@ class Cog(commands.Cog, name='osu!'):
     async def rs_error(self, ctx, error):
         await ctx.send(error.__cause__ or error)
 
-    @commands.command()
-    async def profile(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
-        mode: GameModes
+    @commands.command(aliases=[
+        'mania', 'ctb', 'taiko',
+        'rx', 'ap', 'std',
+        'taikorx', 'ctbrx'
+    ])
+    async def osu(self, ctx, username: str = None):
+        mode: GameModes = GameModes.STANDARD
 
-        user, mode = await get_username_and_mode(ctx, username, mode)
+        user = username or users.get(str(ctx.author.id))
+
+        if ctx.invoked_with == 'rx':
+            mode = GameModes.RX_STANDARD
+        if ctx.invoked_with == 'ap':
+            mode = GameModes.AP_STANDARD
+        if ctx.invoked_with == 'std' or ctx.invoked_with == 'osu':
+            mode = GameModes.STANDARD
+        if ctx.invoked_with == 'taiko':
+            mode = GameModes.TAIKO
+        if ctx.invoked_with == 'taikorx':
+            mode = GameModes.RX_TAIKO
+        if ctx.invoked_with == 'ctb':
+            mode = GameModes.CATCH
+        if ctx.invoked_with == 'ctbrx':
+            mode = GameModes.RX_CATCH
+        if ctx.invoked_with == 'mania':
+            mode = GameModes.MANIA
 
         data = await api.get('get_player_info', params={
             'name': user,
@@ -186,7 +207,7 @@ class Cog(commands.Cog, name='osu!'):
                     return i - 1
                 i += 1
 
-        description = get_template(self.__cog_name__, 'profile').substitute(
+        description = get_template(self.__cog_name__, 'osu').substitute(
             rank=stats["rank"],
             country=player["country"].upper(),
             countryrank=stats["country_rank"],
@@ -219,8 +240,8 @@ class Cog(commands.Cog, name='osu!'):
 
         return await ctx.send(embed=embed)
 
-    @profile.error
-    async def profile_error(self, ctx, error):
+    @osu.error
+    async def osu_error(self, ctx, error):
         return await ctx.send(error.__cause__ or error)
 
     @commands.command(aliases=['lb'])
@@ -287,11 +308,32 @@ class Cog(commands.Cog, name='osu!'):
 
             await ctx.send(embed=embed)
 
-    @commands.command()
-    async def top(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
-        mode: GameModes
+    @commands.command(aliases=[
+        'rxtop', 'aptop', 'stdtop',
+        'taikotop', 'taikorxtop', 'ctbtop',
+        'ctbrxtop', 'maniatop'
+    ])
+    async def osutop(self, ctx, username: str = None):
+        mode: GameModes = GameModes.STANDARD
 
-        user, mode = await get_username_and_mode(ctx, username, mode)
+        user = username or users.get(str(ctx.author.id))
+
+        if ctx.invoked_with == 'rxtop':
+            mode = GameModes.RX_STANDARD
+        if ctx.invoked_with == 'aptop':
+            mode = GameModes.AP_STANDARD
+        if ctx.invoked_with == 'stdtop' or ctx.invoked_with == 'osutop':
+            mode = GameModes.STANDARD
+        if ctx.invoked_with == 'taikotop':
+            mode = GameModes.TAIKO
+        if ctx.invoked_with == 'taikorxtop':
+            mode = GameModes.RX_TAIKO
+        if ctx.invoked_with == 'ctbtop':
+            mode = GameModes.CATCH
+        if ctx.invoked_with == 'ctbrxtop':
+            mode = GameModes.RX_CATCH
+        if ctx.invoked_with == 'maniatop':
+            mode = GameModes.MANIA
 
         data = await api.get('get_player_scores', params={
             'name': user,
@@ -310,14 +352,14 @@ class Cog(commands.Cog, name='osu!'):
         # consider using `player = data["player"]` if country is not necessary.
 
         description = '\n'.join([
-            get_template(self.qualified_name, 'top').substitute(
+            get_template(self.qualified_name, 'osutop').substitute(
                 rank=rank,
                 map=score['beatmap']['title'],
                 difficulty=score['beatmap']['version'],
                 mods=score['mods_readable'],
                 link=f"https://{domain}/beatmapsets/{score['beatmap']['set_id']}",
                 stars=score['beatmap']['diff'],
-                grade=score['grade'],
+                grade=Grades[score['grade']].value[1],
                 pp=score['pp'],
                 accuracy=score['acc'],
                 score=score['score'],
@@ -348,7 +390,7 @@ class Cog(commands.Cog, name='osu!'):
 
         await ctx.send(embed=embed)
         
-    @top.error
+    @osutop.error
     async def top_error(self, ctx, error):
         await ctx.send(error.__cause__ or error)
 
