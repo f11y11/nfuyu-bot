@@ -1,4 +1,6 @@
 import math
+import time
+
 import humanize
 import logging
 
@@ -25,6 +27,10 @@ def get_template(cog_name, command_name: str) -> Template:
         return Template(val)
 
     raise KeyError(f'No command description found for {cog_name}.{command_name}.')
+
+
+def construct_avatar_url(user_id):
+    return f'https://a.{domain}/{user_id}?{int(time.time())}'
 
 
 async def get_username_and_mode(ctx, username: str = None, mode: GameModes = GameModes.STANDARD):
@@ -117,13 +123,20 @@ class Cog(commands.Cog, name='osu!'):
                 float(beatmap["diff"])
             )
 
-            return await ctx.send(embed=Embed(
+            embed = Embed(
                 description=description,
                 color=Grades[score["grade"]].value[0]).set_footer(
-                text=footer).set_author(name=author,
-                                        url=f'https://osu.{domain}/beatmapsets/{beatmap["set_id"]}',
-                                        icon_url=f'https://a.{domain}/{player["id"]}').set_thumbnail(
-                url=f'https://b.{domain}/thumb/{beatmap["set_id"]}.jpg'))
+                text=footer
+            )
+
+            embed.set_thumbnail(url=f'https://b.{domain}/thumb/{beatmap["set_id"]}.jpg')
+            embed.set_author(
+                name=author,
+                url=f'https://osu.{domain}/beatmapsets/{beatmap["set_id"]}',
+                icon_url=construct_avatar_url(player['id'])
+            )
+
+            return await ctx.send(embed=embed)
 
     @rs.error
     async def rs_error(self, ctx, error):
@@ -178,15 +191,19 @@ class Cog(commands.Cog, name='osu!'):
             a_count=stats["a_count"]
         )
 
-        return await ctx.send(embed=Embed(
+        embed = Embed(
             description=description,
             color=ctx.author.color,
-            )
-            .set_author(
-                name=f'{repr(mode)} Profile for {info["name"]}',
-                url=f'https://osu.{domain}/u/{info["id"]}',
-                icon_url=f'https://osu.{domain}/static/images/flags/{info["country"].upper()}.png')
-            .set_thumbnail(url=f'https://a.{domain}/{info["id"]}'))
+        )
+
+        embed.set_author(
+            name=f'{repr(mode)} Profile for {info["name"]}',
+            url=f'https://osu.{domain}/u/{info["id"]}',
+            icon_url=f'https://osu.{domain}/static/images/flags/{info["country"].upper()}.png'
+        )
+        embed.set_thumbnail(url=construct_avatar_url(info['id']))
+
+        return await ctx.send(embed=embed)
 
     @profile.error
     async def profile_error(self, ctx, error):
@@ -211,14 +228,18 @@ class Cog(commands.Cog, name='osu!'):
             for rank, player in enumerate(data["leaderboard"], 1)]
         )
 
-        await ctx.send(embed=Embed(
-                    description=description,
-                    color=1167239
-                ).set_author(
-                    name=f'{repr(mode)} PP Leaderboard', icon_url='https://'+domain+'/static/favicon/favicon.ico'
-                )
-                .set_footer(text=f'osu.{domain}')
-              )
+        embed = Embed(
+            description=description,
+            color=1167239
+        )
+
+        embed.set_author(
+            name=f'{repr(mode)} PP Leaderboard',
+            icon_url='https://' + domain + '/static/favicon/favicon.ico'
+        )
+        embed.set_footer(text=f'osu.{domain}')
+
+        await ctx.send(embed=embed)
 
     @leaderboard.error
     async def leaderboard_error(self, ctx, error):
@@ -246,13 +267,12 @@ class Cog(commands.Cog, name='osu!'):
             embed = Embed(
                 description=description,
                 color=0x00ff00
-            )\
-                .set_thumbnail(url='https://'+domain+'/favicon.ico')\
-                .set_footer(text=f'api.{domain}')
+            )
+            embed.set_thumbnail(url='https://'+domain+'/favicon.ico')
+            embed.set_footer(text=f'api.{domain}')
 
             await ctx.send(embed=embed)
 
-    @commands.is_owner()
     @commands.command()
     async def top(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
         mode: GameModes
@@ -299,10 +319,23 @@ class Cog(commands.Cog, name='osu!'):
             description=description,
         )
 
-        embed.set_footer(text=f'On {domain}', icon_url=f'https://{domain}/static/favicon/favicon.ico')
-        embed.set_author(name=f'Top Plays for {user}', icon_url=f'https://osu.{domain}/static/images/flags/{user_info["country"].upper()}.png')
+        embed.set_footer(
+            text=f'On {domain}',
+            icon_url=f'https://{domain}/static/favicon/favicon.ico'
+        )
+        embed.set_author(
+            name=f'Top Plays for {user}',
+            icon_url=f'https://osu.{domain}/static/images/flags/{user_info["country"].upper()}.png'
+        )
+        embed.set_thumbnail(
+            url=construct_avatar_url(user_info["id"])
+        )
 
         await ctx.send(embed=embed)
+        
+    @top.error
+    async def top_error(self, ctx, error):
+        await ctx.send(error.__cause__ or error)
 
 
 async def setup(bot):
