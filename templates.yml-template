@@ -16,7 +16,7 @@ osu!.rs: |
 # $emoji_sh, $sh_count
 # $emoji_s, $s_count
 # $emoji_a, $a_count
-osu!.profile: |
+osu!.osu: |
    ▸ **Rank:** #$rank ($country#$countryrank)
    ▸ **Level:** $level
    ▸ **PP:** $pp
@@ -32,8 +32,7 @@ osu!.stats: |
    ▸ **Registered Users:** $registered
    ▸ **Currently Playing:** $online
 
-
-osu!.top: |
+osu!.osutop: |
    **$map [$difficulty] +$mods** [$stars★]
    ▸ $grade ▸ **$pp ▸ $accuracy%**
    $score ▸ x$scoremaxcombo/$beatmapmaxcombo ▸ [$n300/$n100/$n50/$nmiss]
