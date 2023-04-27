@@ -306,8 +306,10 @@ class Cog(commands.Cog, name='osu!'):
         })
 
         player = user_data["player"]["info"]
+        # player is returned on /get_player_scores, but it does not include the country data
+        # consider using `player = data["player"]` if country is not necessary.
 
-        description = '\n\n'.join([
+        description = '\n'.join([
             get_template(self.qualified_name, 'top').substitute(
                 rank=rank,
                 map=score['beatmap']['title'],
@@ -327,7 +329,7 @@ class Cog(commands.Cog, name='osu!'):
                 nmiss=score['nmiss'],
             )
             for rank, score in enumerate(data["scores"], 1)]
-        )
+        ) if data["scores"] else f"{player['name']} does not have any top plays in **{repr(mode)}**."
 
         embed = Embed(
             description=description,
@@ -335,10 +337,9 @@ class Cog(commands.Cog, name='osu!'):
 
         embed.set_footer(
             text=f'On {domain}',
-            icon_url=f'https://{domain}/static/favicon/favicon.ico'
         )
         embed.set_author(
-            name=f'Top Plays for {user}',
+            name=f'Top {repr(mode)} Plays for {user}',
             icon_url=f'https://osu.{domain}/static/images/flags/{player["country"].upper()}.png'
         )
         embed.set_thumbnail(
