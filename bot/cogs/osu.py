@@ -18,26 +18,41 @@ from string import Template
 
 DEBUG: bool = config.get('debug')
 domain = config.get('domain')
+
 with open('templates.yml', 'r', encoding='utf-8') as f:
     templates: dict = yaml.safe_load(f)
 
 
 def get_template(cog_name, command_name: str) -> Template:
+    """
+    Obtain embed description from templates.yml and return it for substitution
+    :return: string.Template
+    :raises KeyError: No command description found for cog.command_name.
+    """
     if val := templates.get(f'{cog_name}.{command_name}'):
         return Template(val)
 
     raise KeyError(f'No command description found for {cog_name}.{command_name}.')
 
 
-def construct_avatar_url(user_id):
-    return f'https://a.{domain}/{user_id}?{int(time.time())}'
+def construct_avatar_url(player_id):
+    """
+    Returns the player avatar URL and prevents caching if enabled.
+    :param int | str player_id:
+    :return: str
+    """
+    url = f'https://a.{domain}/{player_id}'
+    if not config.get('cache_avatars', True):
+        return url
+
+    return url + str(int(time.time()))
 
 
 async def get_username_and_mode(ctx, username: str = None, mode: GameModes = GameModes.STANDARD):
     """
     Returns a tuple containing the username and GameMode
     :return: tuple[str, GameModes]
-    :raises: ValueError
+    :raises ValueError: Set your username using **!setuser**.
     """
     if username:
         try:
@@ -153,7 +168,7 @@ class Cog(commands.Cog, name='osu!'):
             'scope': 'all',
         })
 
-        info = data["player"]["info"]
+        player = data["player"]["info"]
         stats = data["player"]["stats"][str(mode.value)]
 
         def get_level_score(level):
@@ -174,7 +189,7 @@ class Cog(commands.Cog, name='osu!'):
 
         description = get_template(self.__cog_name__, 'profile').substitute(
             rank=stats["rank"],
-            country=info["country"].upper(),
+            country=player["country"].upper(),
             countryrank=stats["country_rank"],
             level=get_level(stats["tscore"]),
             pp=stats["pp"],
@@ -197,11 +212,11 @@ class Cog(commands.Cog, name='osu!'):
         )
 
         embed.set_author(
-            name=f'{repr(mode)} Profile for {info["name"]}',
-            url=f'https://osu.{domain}/u/{info["id"]}',
-            icon_url=f'https://osu.{domain}/static/images/flags/{info["country"].upper()}.png'
+            name=f'{repr(mode)} Profile for {player["name"]}',
+            url=f'https://osu.{domain}/u/{player["id"]}',
+            icon_url=f'https://osu.{domain}/static/images/flags/{player["country"].upper()}.png'
         )
-        embed.set_thumbnail(url=construct_avatar_url(info['id']))
+        embed.set_thumbnail(url=construct_avatar_url(player['id']))
 
         return await ctx.send(embed=embed)
 
@@ -291,7 +306,7 @@ class Cog(commands.Cog, name='osu!'):
             'scope': 'all',
         })
 
-        user_info = user_data["player"]["info"]
+        player = user_data["player"]["info"]
 
         description = '\n\n'.join([
             get_template(self.qualified_name, 'top').substitute(
@@ -325,10 +340,10 @@ class Cog(commands.Cog, name='osu!'):
         )
         embed.set_author(
             name=f'Top Plays for {user}',
-            icon_url=f'https://osu.{domain}/static/images/flags/{user_info["country"].upper()}.png'
+            icon_url=f'https://osu.{domain}/static/images/flags/{player["country"].upper()}.png'
         )
         embed.set_thumbnail(
-            url=construct_avatar_url(user_info["id"])
+            url=construct_avatar_url(player["id"])
         )
 
         await ctx.send(embed=embed)
