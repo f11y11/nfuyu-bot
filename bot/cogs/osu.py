@@ -1,12 +1,10 @@
 import math
 import time
-
 import humanize
 import logging
+import yaml
 
 from datetime import datetime
-
-import yaml
 from discord.ext import commands
 from discord import Embed
 from bot.bot import config
@@ -15,6 +13,7 @@ from utils.api import *
 from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
 from utils.db import users
 from string import Template
+
 
 DEBUG: bool = config.get('debug')
 domain = config.get('domain')
