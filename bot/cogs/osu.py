@@ -44,7 +44,7 @@ def construct_avatar_url(player_id):
     if not config.get('cache_avatars', True):
         return url
 
-    return url + str(int(time.time()))
+    return url + f"?{str(int(time.time()))}"
 
 
 async def get_username_and_mode(ctx, username: str = None, mode: GameModes = GameModes.STANDARD):
