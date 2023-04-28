@@ -28,8 +28,6 @@ logging:
   # true or false determining if logs should be printed to stderr
   console: false
 
-auto_updates: false
-
 # set to true for faster loading of player avatars that can be outdated at times
 # set to false for non-cached, up-to-date player avatars
 cache_avatars: true
