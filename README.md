@@ -33,3 +33,4 @@
 - [Discord Server](https://discord.gg/UqrbWKHHz3)
 
 <sub>Looking for change logs? They are now shared with each [release](https://github.com/f11y11/nfuyu-bot/releases)</sub>
+# <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="25" alt="JetBrains Logo (Main) logo."> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/PyCharm_icon.png" width="25" alt="PyCharm logo.">
