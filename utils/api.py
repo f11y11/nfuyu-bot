@@ -28,7 +28,7 @@ class SubdomainHandler:
         :return: str
         """
 
-        return f'v{self._VERSION}' if self._VERSION else ''
+        return f'v{self._VERSION}/' if self._VERSION else ''
 
     @property
     def url(self):
@@ -52,7 +52,7 @@ class SubdomainHandler:
 
         async with aiohttp.ClientSession(trust_env=True) as session:
             async with session.request(
-                    'GET', f'{self.url}/{path}?{query_params}'
+                    'GET', f'{self.url}{path}?{query_params}'
             ) as response:
                 data = await response.json(content_type=None)
 
