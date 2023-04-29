@@ -28,7 +28,7 @@ class SubdomainHandler:
         :return: str
         """
 
-        return f'v{self._VERSION}' if self._VERSION else ''
+        return f'v{self._VERSION}/' if self._VERSION else ''
 
     @property
     def url(self):
