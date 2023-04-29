@@ -52,7 +52,7 @@ class SubdomainHandler:
 
         async with aiohttp.ClientSession(trust_env=True) as session:
             async with session.request(
-                    'GET', f'{self.url}{path}?{query_params}'
+                    'GET', f'{self.url}/{path}?{query_params}'
             ) as response:
                 data = await response.json(content_type=None)
 
