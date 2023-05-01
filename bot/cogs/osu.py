@@ -161,7 +161,7 @@ class Cog(commands.Cog, name='osu!'):
         'rx', 'ap', 'std',
         'taikorx', 'ctbrx'
     ])
-    async def osu(self, ctx, username: str = None):
+    async def osu(self, ctx, *, username: str = None):
         mode: GameModes = GameModes.STANDARD
 
         user = username or users.get(str(ctx.author.id))
@@ -313,7 +313,7 @@ class Cog(commands.Cog, name='osu!'):
         'taikotop', 'taikorxtop', 'ctbtop',
         'ctbrxtop', 'maniatop'
     ])
-    async def osutop(self, ctx, username: str = None):
+    async def osutop(self, ctx, *, username: str = None):
         mode: GameModes = GameModes.STANDARD
 
         user = username or users.get(str(ctx.author.id))
