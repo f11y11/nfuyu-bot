@@ -1,5 +1,5 @@
 requests
-discord~=2.2.2
+discord~=2.2.3
 pyyaml~=6.0
 python-dotenv~=1.0.0
 humanize~=4.6.0
