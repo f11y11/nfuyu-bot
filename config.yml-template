@@ -19,8 +19,8 @@ EMOJI_D: <:rankingDsmall2x:1088834451628380240>
 initial_activity: 'on $domain'
 
 logging:
-  # possible values: error, debug, info, critical
-  # leave blank to disable logging altogether
+  # possible values: error, debug, info, critical, exception
+  # will be set as info if left blank
   level: 'info'
   # a file name with .log extension
   # leave it blank to disable logging to a file
