@@ -3,9 +3,7 @@
 
 import re
 
-__all__ = (
-    'ArgumentWithFlags',
-)
+__all__ = ("ArgumentWithFlags",)
 
 
 class ArgumentWithFlags:
@@ -14,11 +12,11 @@ class ArgumentWithFlags:
 
     @property
     def flags(self) -> list[str]:
-        return re.findall(r'-\w', self.value)
+        return re.findall(r"-\w", self.value)
 
     @property
     def kwargs(self):
         return {
-            kwarg.split('=')[0]: kwarg.split('=')[1]
-            for kwarg in re.findall(r'\w=\S*', self.value)
+            kwarg.split("=")[0]: kwarg.split("=")[1]
+            for kwarg in re.findall(r"\w=\S*", self.value)
         }

@@ -1,7 +1,5 @@
-__all__ = (
-    'users',
-)
+__all__ = ("users",)
 
 from sqlitedict import SqliteDict
 
-users = SqliteDict('users.db', 'users', autocommit=True)
+users = SqliteDict("users.db", "users", autocommit=True)

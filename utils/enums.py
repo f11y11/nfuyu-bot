@@ -203,8 +203,7 @@ class GameModes(Enum):
 
     def __repr__(self):
         if self.value < 4:
-            return f'osu! {self.name.title()}'
-        
-        name = self.name.split('_')
-        return f'osu! {name[1].title()} {name[0]}'
+            return f"osu! {self.name.title()}"
 
+        name = self.name.split("_")
+        return f"osu! {name[1].title()} {name[0]}"

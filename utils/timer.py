@@ -1,9 +1,7 @@
 import logging
 from time import time
 
-__all__ = (
-    'Timer',
-)
+__all__ = ("Timer",)
 
 
 class Timer:
@@ -11,6 +9,7 @@ class Timer:
     Provides context managers that measure the time elapsed since __aenter__
     :return: Timer
     """
+
     def __init__(self, name: str = None):
         self.name = name
         self._start = 0
@@ -23,7 +22,7 @@ class Timer:
     async def __aexit__(self, *args, **kwargs):
         self._stop = time()
         if self.name:
-            logging.info(f'Timer {self.name} resulted with: {self.result:.2f}')
+            logging.info(f"Timer {self.name} resulted with: {self.result:.2f}")
 
     def __await__(self):
         return self.__aenter__().__await__()
