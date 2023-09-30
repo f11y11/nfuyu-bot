@@ -1,5 +1,5 @@
 # A discord bot for private osu! servers.
-[Discord server](https://discord.gg/UqrbWKHHz3) for the emojis the bot uses (Recommended) 
+[Discord server](https://discord.gg/fuZy7MUh7Y) for the emojis the bot uses (Recommended) 
 
 ## Core Features:
 - Save player usernames in a local sqlite database (no setup needed)
