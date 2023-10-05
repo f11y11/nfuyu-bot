@@ -31,3 +31,5 @@ logging:
 # set to true for faster loading of player avatars that can be outdated at times
 # set to false for non-cached, up-to-date player avatars
 cache_avatars: true
+
+raise_command_errors: true
