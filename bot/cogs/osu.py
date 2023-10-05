@@ -1,21 +1,19 @@
+import logging
+import humanize
 import math
 import time
-import humanize
-import logging
 import yaml
 
 from datetime import datetime
-from discord.ext import commands
+from string import Template
 from discord import Embed
+from discord.ext import commands
 from bot.bot import config
 from helpers.converters import ArgumentConverter
 from utils.api import *
-from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
 from utils.db import users
-from string import Template
+from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
 
-
-DEBUG: bool = config.get("debug")
 domain = config.get("domain")
 
 with open("templates.yml", "r", encoding="utf-8") as f:
@@ -48,7 +46,7 @@ def construct_avatar_url(player_id):
 
 
 async def get_username_and_mode(
-    ctx, username: str = None, mode: GameModes = GameModes.STANDARD
+        ctx, username: str = None, mode: GameModes = GameModes.STANDARD
 ):
     """
     Returns a tuple containing the username and GameMode
@@ -89,7 +87,7 @@ class Cog(commands.Cog, name="osu!"):
 
     @commands.command()
     async def rs(
-        self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD
+            self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD
     ):
         mode: GameModes
 
@@ -159,10 +157,6 @@ class Cog(commands.Cog, name="osu!"):
             )
 
             return await ctx.send(embed=embed)
-
-    @rs.error
-    async def rs_error(self, ctx, error):
-        await ctx.send(error.__cause__ or error)
 
     @commands.command(
         aliases=["mania", "ctb", "taiko", "rx", "ap", "std", "taikorx", "ctbrx"]
@@ -253,10 +247,6 @@ class Cog(commands.Cog, name="osu!"):
 
         return await ctx.send(embed=embed)
 
-    @osu.error
-    async def osu_error(self, ctx, error):
-        return await ctx.send(error.__cause__ or error)
-
     @commands.command(aliases=["lb"])
     async def leaderboard(self, ctx, *, mode: ArgumentConverter = GameModes.STANDARD):
         mode: GameModes
@@ -288,10 +278,6 @@ class Cog(commands.Cog, name="osu!"):
         embed.set_footer(text=f"osu.{domain}")
 
         await ctx.send(embed=embed)
-
-    @leaderboard.error
-    async def leaderboard_error(self, ctx, error):
-        return await ctx.send(error.__cause__ or error)
 
     @commands.command()
     async def stats(self, ctx):
@@ -411,9 +397,10 @@ class Cog(commands.Cog, name="osu!"):
 
         await ctx.send(embed=embed)
 
-    @osutop.error
-    async def top_error(self, ctx, error):
+    async def cog_command_error(self, ctx, error: Exception) -> None:
         await ctx.send(error.__cause__ or error)
+        if config.get("raise_command_errors", False):
+            raise error
 
 
 async def setup(bot):
