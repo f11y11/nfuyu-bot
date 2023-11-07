@@ -44,6 +44,7 @@ def construct_avatar_url(player_id):
 
     return url + f"?{str(int(time.time()))}"
 
+
 def parsecommand(input_str):
     """
     Returns a tuple containing the username and GameMode
@@ -128,15 +129,14 @@ class Cog(commands.Cog, name="osu!"):
         )
 
     @commands.command()
-    async def rs(self, ctx, *, parameters = ''):
+    async def rs(self, ctx, *, parameters=''):
         user, mode = parsecommand(parameters)
         
-        if mode == None:
-            return await ctx.send("Invalid game mode, please use any of the follow arguments: -std | -rx | -ap | -taiko | -taikorx | -ctb | -ctbrx | -mania")
-        if not len(user):
-            with open('users.json', 'r') as f:
-                users: dict = json.loads(f.read())
-                user = users.get(str(ctx.author.id))
+        if not mode:
+            return await ctx.send("Invalid game mode, please use any of the follow arguments: "
+                                  "-std | -rx | -ap | -taiko | -taikorx | -ctb | -ctbrx | -mania")
+        if not user:
+            users.get(ctx.author.id)
         if not user:
             return await ctx.send("Set your username using **!setuser**.")
             
@@ -149,15 +149,11 @@ class Cog(commands.Cog, name="osu!"):
         scores = data["scores"]
 
         if not scores:
-            await ctx.send(
-                f'**{player["name"]}** has no recent score in **{repr(mode)}**'
-            )
+            await ctx.send(f'**{player["name"]}** has no recent score in **{repr(mode)}**')
         else:
             score = data["scores"][0]
             beatmap = score["beatmap"]
-            has_mods = bool(
-                filter_invalid_combos(Mods(score["mods"]), score["mode"]).value
-            )
+            has_mods = bool(filter_invalid_combos(Mods(score["mods"]), score["mode"]).value)
 
             description = get_template(self.qualified_name, "rs").substitute(
                 grade=Grades[score["grade"]].value[1],
