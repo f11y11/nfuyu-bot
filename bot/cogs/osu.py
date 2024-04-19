@@ -9,7 +9,6 @@ from string import Template
 from discord import Embed
 from discord.ext import commands
 from bot.bot import config
-from helpers.converters import ArgumentConverter
 from utils.api import *
 from utils.db import users
 from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
@@ -43,49 +42,6 @@ def construct_avatar_url(player_id):
         return url
 
     return url + f"?{str(int(time.time()))}"
-
-
-def parsecommand(input_str):
-    """
-    Returns a tuple containing the username and GameMode
-    :return: tuple[str, GameModes]
-    """
-    gamemodes = {
-        '-std': GameModes.STANDARD, 
-        '-rx': GameModes.RX_STANDARD,
-        '-taiko': GameModes.TAIKO,
-        '-taikorx': GameModes.RX_TAIKO,
-        '-ctb': GameModes.CATCH,
-        '-ctbrx': GameModes.RX_CATCH,
-        '-mania': GameModes.MANIA,
-        '-ap': GameModes.AP_STANDARD, 
-    }
-    
-    mode = None
-    username = ''
-    
-    if not len(input_str) > 0:
-        mode = GameModes.STANDARD
-        return username, mode  
-    
-    tokens = input_str.split()
-    for i, token in enumerate(tokens):
-        if token.startswith('-'):
-            mode = token
-            username = ' '.join(tokens[:i])
-            break
-
-    if mode is None:
-        mode = GameModes.STANDARD
-        username = ' '.join(tokens)
-        return username, mode
-
-    try:
-        mode = gamemodes[mode]
-    except KeyError:
-        mode = None
-            
-    return username, mode
 
 
 async def get_username_and_mode(
