@@ -9,10 +9,10 @@ from string import Template
 from discord import Embed
 from discord.ext import commands
 from bot.bot import config
-from helpers.converters import ArgumentConverter
 from utils.api import *
 from utils.db import users
 from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
+from helpers.converters import ArgumentConverter
 
 domain = config.get("domain")
 
@@ -45,57 +45,15 @@ def construct_avatar_url(player_id):
     return url + f"?{str(int(time.time()))}"
 
 
-def parsecommand(input_str):
-    """
-    Returns a tuple containing the username and GameMode
-    :return: tuple[str, GameModes]
-    """
-    gamemodes = {
-        '-std': GameModes.STANDARD, 
-        '-rx': GameModes.RX_STANDARD,
-        '-taiko': GameModes.TAIKO,
-        '-taikorx': GameModes.RX_TAIKO,
-        '-ctb': GameModes.CATCH,
-        '-ctbrx': GameModes.RX_CATCH,
-        '-mania': GameModes.MANIA,
-        '-ap': GameModes.AP_STANDARD, 
-    }
-    
-    mode = None
-    username = ''
-    
-    if not len(input_str) > 0:
-        mode = GameModes.STANDARD
-        return username, mode  
-    
-    tokens = input_str.split()
-    for i, token in enumerate(tokens):
-        if token.startswith('-'):
-            mode = token
-            username = ' '.join(tokens[:i])
-            break
-
-    if mode is None:
-        mode = GameModes.STANDARD
-        username = ' '.join(tokens)
-        return username, mode
-
-    try:
-        mode = gamemodes[mode]
-    except KeyError:
-        mode = None
-            
-    return username, mode
-
-
 async def get_username_and_mode(
-        ctx, username: str = None, mode: GameModes = GameModes.STANDARD
+    ctx, username: str = None, mode: GameModes = GameModes.STANDARD
 ):
     """
     Returns a tuple containing the username and GameMode
     :return: tuple[str, GameModes]
     :raises ValueError: Set your username using **!setuser**.
     """
+
     if username:
         try:
             _mode = await ArgumentConverter().convert(ctx, username)
@@ -110,7 +68,7 @@ async def get_username_and_mode(
     if not user and not username:
         raise ValueError("Set your username using **!setuser**.")
     else:
-        return user, mode
+        return user, mode or GameModes.STANDARD
 
 
 class Cog(commands.Cog, name="osu!"):
@@ -129,17 +87,8 @@ class Cog(commands.Cog, name="osu!"):
         )
 
     @commands.command()
-    async def rs(self, ctx, *, parameters=''):
-        user, mode = parsecommand(parameters)
-        
-        if not mode:
-            return await ctx.send("Invalid game mode, please use any of the follow arguments: "
-                                  "-std | -rx | -ap | -taiko | -taikorx | -ctb | -ctbrx | -mania")
-        if not user:
-            users.get(ctx.author.id)
-        if not user:
-            return await ctx.send("Set your username using **!setuser**.")
-            
+    async def rs(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
+        user, mode = await get_username_and_mode(ctx, username, mode)
         data = await api.get(
             "get_player_scores",
             {"name": user, "scope": "recent", "limit": 1, "mode": mode.value},
@@ -286,6 +235,7 @@ class Cog(commands.Cog, name="osu!"):
             url=f'https://osu.{domain}/u/{player["id"]}',
             icon_url=f'https://osu.{domain}/static/images/flags/{player["country"].upper()}.png',
         )
+
         embed.set_thumbnail(url=construct_avatar_url(player["id"]))
 
         return await ctx.send(embed=embed)

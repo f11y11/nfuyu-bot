@@ -62,5 +62,5 @@ class ArgumentConverter(Converter):
         if len(arguments) == 1:
             if arg in game_modes:
                 return game_modes[arg]
-        else:
-            raise ValueError("Invalid game mode and/or mod")
+
+        raise ValueError("Invalid game mode and/or mod")
