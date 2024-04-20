@@ -60,6 +60,8 @@ class SubdomainHandler:
 
             if status := data.get("status"):
                 raise ValueError(status)
+            elif msg := data.get("msg"):
+                raise ValueError(msg)
             else:
                 logging.error(
                     f"Generic error exception was raised for the following response: {data}"
