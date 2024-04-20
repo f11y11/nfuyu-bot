@@ -12,6 +12,7 @@ from bot.bot import config
 from utils.api import *
 from utils.db import users
 from utils.enums import GameModes, Grades, Mods, filter_invalid_combos
+from helpers.converters import ArgumentConverter
 
 domain = config.get("domain")
 
@@ -45,13 +46,14 @@ def construct_avatar_url(player_id):
 
 
 async def get_username_and_mode(
-        ctx, username: str = None, mode: GameModes = GameModes.STANDARD
+    ctx, username: str = None, mode: GameModes = GameModes.STANDARD
 ):
     """
     Returns a tuple containing the username and GameMode
     :return: tuple[str, GameModes]
     :raises ValueError: Set your username using **!setuser**.
     """
+
     if username:
         try:
             _mode = await ArgumentConverter().convert(ctx, username)
@@ -66,7 +68,7 @@ async def get_username_and_mode(
     if not user and not username:
         raise ValueError("Set your username using **!setuser**.")
     else:
-        return user, mode
+        return user, mode or GameModes.STANDARD
 
 
 class Cog(commands.Cog, name="osu!"):
@@ -85,17 +87,8 @@ class Cog(commands.Cog, name="osu!"):
         )
 
     @commands.command()
-    async def rs(self, ctx, *, parameters=''):
-        user, mode = parsecommand(parameters)
-        
-        if not mode:
-            return await ctx.send("Invalid game mode, please use any of the follow arguments: "
-                                  "-std | -rx | -ap | -taiko | -taikorx | -ctb | -ctbrx | -mania")
-        if not user:
-            users.get(ctx.author.id)
-        if not user:
-            return await ctx.send("Set your username using **!setuser**.")
-            
+    async def rs(self, ctx, username: str = None, mode: ArgumentConverter = GameModes.STANDARD):
+        user, mode = await get_username_and_mode(ctx, username, mode)
         data = await api.get(
             "get_player_scores",
             {"name": user, "scope": "recent", "limit": 1, "mode": mode.value},
@@ -242,6 +235,7 @@ class Cog(commands.Cog, name="osu!"):
             url=f'https://osu.{domain}/u/{player["id"]}',
             icon_url=f'https://osu.{domain}/static/images/flags/{player["country"].upper()}.png',
         )
+
         embed.set_thumbnail(url=construct_avatar_url(player["id"]))
 
         return await ctx.send(embed=embed)
